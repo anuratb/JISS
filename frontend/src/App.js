@@ -2,12 +2,13 @@ import './App.css';
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-
+import Auth from './Auth';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  Redirect
 } from "react-router-dom";
 
 import Login from "./components/login.component";
@@ -73,19 +74,21 @@ class LoginMgnt extends React.Component {
   }
 }
 */
+
 function App() {
-  return (
+  return (  
     <Router>
       <div className="App">
 
         <header className="App-header">
           <Login />
-
+          
         </header>
       </div>
-    </Router>
+    </Router>    
   );
 }
+
 
 export default App;
 //REf :https://www.positronx.io/build-react-login-sign-up-ui-template-with-bootstrap-4/
