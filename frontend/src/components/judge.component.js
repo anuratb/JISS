@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Dropdown from "react-dropdown";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import './lawyer.css';
+import './judge.css';
 import {BrowserRouter as Router  }from "react-router-dom";
 class SearchById extends Component {
     constructor(props){
@@ -55,7 +55,7 @@ class SearchByKey extends Component {
         );
     }
 }
-export default class Lawyer extends Component {
+export default class Judge extends Component {
     constructor(props) {
         super(props);
         this.state = {name: props.name,comp:null};         
@@ -77,12 +77,12 @@ export default class Lawyer extends Component {
         
         return (
             <Router>
-            <div className="Lawyer">
-                <div className="Lawyer-header">
+            <div className="Judge">
+                <div className="Judge-header">
                     <h1>Welcome, {this.state.name}</h1>
                     <br />  
                     Search Old Case:                    
-                    <select className = "Lawyer-dropdown-header" defaultValue="Option-Select" onChange={this.OnCriteriaChange}>
+                    <select className = "Judge-dropdown-header" defaultValue="Option-Select" onChange={this.OnCriteriaChange}>
                         <option value  = "Option-Select" >Select An Option</option>
                         <option value  = "ById" >Search By ID</option>
                         <option value  = "ByKeyword">Search By Keyword</option>

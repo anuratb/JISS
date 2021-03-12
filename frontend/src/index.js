@@ -5,6 +5,8 @@ import './index.css';
 import App from './App';
 import Auth from './Auth';
 import Navbar from "./components/nvbar.components";
+import Judge from "./components/judge.component";
+import Lawyer from "./components/lawyer.components";
 import reportWebVitals from './reportWebVitals';
 import {
   Switch,
@@ -18,19 +20,24 @@ ReactDOM.render(
     <div>
       <Navbar />
       <Switch>
-        <Route path="/home" ><GuestMessage user="ABCD" /></Route>{/**For testing ProtectedRoute */}
-        <Route exact path="/login">{Auth.isLoggedIn() ? <Redirect to="/home"/>:<App />}</Route>
-      
-    </Switch>
-        {/*(!Auth.isLoggedIn()) ? <Redirect to="/login" /> : <Redirect to="/home" />*/}
-    </div > 
+        {/**Later all the routes which need to be protected will be changed to protected routes */}
+        <Route exact path="/home" ><GuestMessage user="ABCD" /></Route>{/**For testing ProtectedRoute */}
+        <Route exact path="/login">{Auth.isLoggedIn() ? <Redirect to="/home" /> : <App />}</Route>
+        <Route exact path="/userType-judge"><Judge name="Judge Name" /></Route>
+        <Route exact path="/userType-lawyer"><Lawyer name="Lawyer Name" /></Route>
+
+      </Switch>
+      {/*(!Auth.isLoggedIn()) ? <Redirect to="/login" /> : <Redirect to="/home" />*/}
+    </div >
   </Router >
   ,
   document.getElementById('root')
 );
 function GuestMessage(props) {
   return (
-    <h1>Welcome to Judiciary Management System, {props.user}</h1>
+    <div>      
+      <h1>Welcome to Judiciary Management System, {props.user}</h1>
+    </div>
   );
 }
 
