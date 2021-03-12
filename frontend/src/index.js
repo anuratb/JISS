@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";
 import './index.css';
 import App from './App';
+import Auth from './Auth';
+import Navbar from "./components/nvbar.components";
 import reportWebVitals from './reportWebVitals';
-import {  
+import {
   Switch,
   Route,
   Link,
@@ -13,11 +15,14 @@ import {
 import ProtectedRoute from "./ProtectedRoute"
 ReactDOM.render(
   <Router>
-    <div>    
-    <Switch>
-      <Route exact path = "/app"><App/></Route>
-      <ProtectedRoute  path="/eg" ><GuestMessage user="ABCD" /></ProtectedRoute>{/**For testing ProtectedRoute */}
+    <div>
+      <Navbar />
+      <Switch>
+        <Route path="/home" ><GuestMessage user="ABCD" /></Route>{/**For testing ProtectedRoute */}
+        <Route exact path="/login">{Auth.isLoggedIn() ? <Redirect to="/home"/>:<App />}</Route>
+      
     </Switch>
+        {/*(!Auth.isLoggedIn()) ? <Redirect to="/login" /> : <Redirect to="/home" />*/}
     </div > 
   </Router >
   ,

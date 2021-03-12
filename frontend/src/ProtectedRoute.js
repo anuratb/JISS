@@ -10,7 +10,7 @@ export default function ProtectedRoute({children,...rest}) {
                 ) : (
                     <Redirect
                         to={{
-                            pathname: "/app",                            
+                            pathname: "/login",                            
                         }}
                     />
                 )
