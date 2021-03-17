@@ -6,7 +6,8 @@ import App from './App';
 import Auth from './Auth';
 import Navbar from "./components/nvbar.components";
 import Judge from "./components/judge.component";
-import Lawyer from "./components/lawyer.components";
+import Lawyer from "./components/lawyer.component";
+import Registrar from"./components/registrar.component";
 import reportWebVitals from './reportWebVitals';
 import {
   Switch,
@@ -25,6 +26,7 @@ ReactDOM.render(
         <Route exact path="/login">{Auth.isLoggedIn() ? <Redirect to="/home" /> : <App />}</Route>
         <Route exact path="/userType-judge"><Judge name="Judge Name" /></Route>
         <Route exact path="/userType-lawyer"><Lawyer name="Lawyer Name" /></Route>
+        <Route exact path="/userType-registrar"><Registrar name="Registrar Name"/></Route>
 
       </Switch>
       {/*(!Auth.isLoggedIn()) ? <Redirect to="/login" /> : <Redirect to="/home" />*/}

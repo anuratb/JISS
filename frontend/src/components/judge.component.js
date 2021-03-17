@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import Dropdown from "react-dropdown";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './judge.css';
 import {BrowserRouter as Router  }from "react-router-dom";
@@ -87,7 +89,7 @@ export default class Judge extends Component {
                         <option value  = "ById" >Search By ID</option>
                         <option value  = "ByKeyword">Search By Keyword</option>
                     </select>
-                    {this.state.comp}
+                    {this.state.comp}                    
                 </div>
             </div>
             </Router>
