@@ -8,6 +8,8 @@ import Navbar from "./components/nvbar.components";
 import Judge from "./components/judge.component";
 import Lawyer from "./components/lawyer.component";
 import Registrar from"./components/registrar.component";
+import CourtCase from "./components/court_case.component";
+
 import reportWebVitals from './reportWebVitals';
 import {
   Switch,
@@ -27,7 +29,7 @@ ReactDOM.render(
         <Route exact path="/userType-judge"><Judge name="Judge Name" /></Route>
         <Route exact path="/userType-lawyer"><Lawyer name="Lawyer Name" /></Route>
         <Route exact path="/userType-registrar"><Registrar name="Registrar Name"/></Route>
-
+        <Route exact path="/case-report"><CourtCase/></Route>
       </Switch>
       {/*(!Auth.isLoggedIn()) ? <Redirect to="/login" /> : <Redirect to="/home" />*/}
     </div >
