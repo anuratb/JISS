@@ -5,7 +5,7 @@ export default function ProtectedRoute({children,...rest}) {
     return (
         <Route            
             render={(props) =>
-                Auth.isLoggedIn() ? (                    
+                Auth() ? (                    
                     children
                 ) : (
                     <Redirect
