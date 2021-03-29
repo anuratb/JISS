@@ -1,8 +1,5 @@
-function LogoutButton(props) {
-    return (
-        <button onClick={props.handlelogout}>LogOut</button>
-    )
-}
+import LogoutButton from "./logoutbutton"
+
 export default function Home(props) {
     return (
         <div>

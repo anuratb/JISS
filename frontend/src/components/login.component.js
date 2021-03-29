@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from 'axios';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import './login.css';
 
 import {
     BrowserRouter as Router,
@@ -22,9 +23,9 @@ export default class Login extends Component {
         super(props);
         this.state = { username: '', password: '' };
         this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);     
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
- 
+
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
     }
@@ -39,34 +40,35 @@ export default class Login extends Component {
             .then(res => {
                 console.log(res.data);
                 this.props.handlelogin(res.data);
-                console.log(this.state.login);
+                
             });
         event.preventDefault();
-       
 
-    }   
+
+    }
     render() {
-        
+
         if (this.state.login) {
             return (<Redirect to="/home" />)
         }
         else {
             return (
-                <div>
-                    <Welcome />
-                    <form onSubmit={this.handleSubmit}>
-                        <h3>Please Sign In</h3>
+                <div className="Login">
+                    <header className="Login-header">
+                        <Welcome />
+                        <form onSubmit={this.handleSubmit}>
+                            <h3>Please Sign In</h3>
 
-                        <div className="form-group">
-                            <label>Username</label>
-                            <input type="text" name="username" onChange={this.handleChange} className="form-control" placeholder="Enter Username" />
-                        </div>
-                        <br />
-                        <div className="form-group">
-                            <label>Password</label>
-                            <input type="password" name="password" onChange={this.handleChange} className="form-control" placeholder="Enter password" />
-                        </div>
-                        {/*
+                            <div className="form-group">
+                                <label>Username</label>
+                                <input type="text" name="username" onChange={this.handleChange} className="form-control" placeholder="Enter Username" />
+                            </div>
+                            <br />
+                            <div className="form-group">
+                                <label>Password</label>
+                                <input type="password" name="password" onChange={this.handleChange} className="form-control" placeholder="Enter password" />
+                            </div>
+                            {/*
                     <div className="form-group">
                         <div className="custom-control custom-checkbox">
                             <input type="checkbox" className="custom-control-input" id="customCheck1" />
@@ -74,11 +76,12 @@ export default class Login extends Component {
                         </div>
                     </div>*/}
 
-                        <button type="submit" className="btn btn-primary btn-block">Submit</button>
-                        {/*<p className="forgot-password text-right">
+                            <button type="submit" className="btn btn-primary btn-block">Submit</button>
+                            {/*<p className="forgot-password text-right">
                         Forgot <a href="#">password?</a>
                 </p>*/}
-                    </form>
+                        </form>
+                    </header>
                 </div>
             );
         }

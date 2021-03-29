@@ -82,37 +82,36 @@ class LoginMgnt extends React.Component {
   }
 }
 */
-
+function Bad_Login() {
+  this.message = "Invalid Login";
+  this.name = "Bad_Login";
+}
 class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { logged_in: "No",usr_type: "None" };
+    this.state = { logged_in: "No", usr_type: "None" ,usr_name :"None"};
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
   }
-  handleLogin(props)
-  {
-    console.log("Hi");
-    if(props.login_status=="1")
-    {
-      this.setState({logged_in : "Yes",usr_type: props.user_type});
-    }  
+  handleLogin(props) {
+    
+    if (props.login_status == "1") {      
+      this.setState({ logged_in: "Yes", usr_type: props.user_type ,usr_name:props.nameofuser});
+    }
   }
-  handleLogout(e)
-  {
+  handleLogout(e) {
     console.log("Handing Logout");
-    axios.post("/api/logout",{withCredentials:true})
-    .then(res=>{
-      if(res.data.logout_status=="1")
-      {
-        this.setState({logged_in :"No",usr_type : "None"});
-      }
-      
-    })
+    axios.post("/api/logout", { withCredentials: true })
+      .then(res => {
+        if (res.data.logout_status == "1") {
+          this.setState({ logged_in: "No", usr_type: "None" ,usr_name:"None"});
+        }
+
+      })
     //TODO Error handling aboove
-    
-    
+
+
   }
   //fetch("/api/account").then(res => res.json()).then(res => { console.log(res); });
   //axios.post('api/logout',null)
@@ -120,32 +119,51 @@ class App extends Component {
     axios.get("/api/isLoggedIn", { withCredentials: true })
       .then(res => {
         if (this.state.logged_in == "No" & res.data.login_status == '1') {
-          this.setState({ logged_in: "Yes",usr_type: res.data.user_type });
+          this.setState({ logged_in: "Yes", usr_type: res.data.user_type });
         }
         else if (this.state.logged_in == "Yes" & res.data.login_status == '0') {
-          this.setState({ login: "No",usr_type: "None" });
+          this.setState({ login: "No", usr_type: "None" });
         }
 
       });
   }
-  componentDidMount()
-  {
+  componentDidMount() {
     this.LoggedIn();
   }
   render() {
     return (
       <Router>
         <div className="App">
-          <Navbar LoginStatus = {this.logged_in} handleLogout = {this.handleLogout}/>
+          <Navbar LoginStatus={this.logged_in} handleLogout={this.handleLogout} />
           <header >
 
             <Switch>
               {/**Later all the routes which need to be protected will be changed to protected routes */}
               <Route exact path="/home" ><Home user="ABCD" isLoggedIn={this.state.logged_in} handlelogout={this.handleLogout} /></Route>{/**For testing ProtectedRoute */}
-              <Route exact path="/login">{this.state.logged_in == "Yes" ? <Redirect to="/home" /> : <Login handlelogin={this.handleLogin} />}</Route>
-              <Route exact path="/userType-judge"><Judge name="Judge Name" /></Route>
-              <Route exact path="/userType-lawyer"><Lawyer name="Lawyer Name" /></Route>
-              <Route exact path="/userType-registrar"><Registrar name="Registrar Name" /></Route>
+              <Route exact path="/login">
+                {
+                  (this.state.logged_in == "Yes") ?
+                    (this.state.usr_type == "Registrar") ?
+                      <Redirect to="/home" />
+                      :
+                      (this.state.usr_type == "Lawyer") ?
+                        <Redirect to="/userType-lawyer" />
+                        : (this.state.usr_type == "Judge") ?
+                          <Redirect to="/userType-judge" />
+                          :null
+                          : <Login handlelogin={this.handleLogin} />           
+                }
+                
+              </Route>
+              <Route exact path="/userType-judge">
+                {
+                  this.state.logged_in=="Yes"?
+                  <Judge name={this.state.usr_name} handlelogout = {this.handleLogout}/>
+                  :<Redirect to = "/login"/>
+                }
+              </Route>
+              <Route exact path="/userType-lawyer"><Lawyer name={this.state.usr_name} /></Route>
+              <Route exact path="/userType-registrar"><Registrar name={this.state.usr_name} /></Route>
               <Route exact path="/case-report"><CourtCase /></Route>
             </Switch>
           </header>
@@ -159,3 +177,4 @@ class App extends Component {
 
 export default App;
 //REf :https://www.positronx.io/build-react-login-sign-up-ui-template-with-bootstrap-4/
+//TODO Judge Query By Key
