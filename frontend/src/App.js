@@ -90,14 +90,14 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { logged_in: "No", usr_type: "None" ,usr_name :"None"};
+    this.state = { logged_in: "No", usr_type: "None", usr_name: "None" };
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
   }
   handleLogin(props) {
-    
-    if (props.login_status == "1") {      
-      this.setState({ logged_in: "Yes", usr_type: props.user_type ,usr_name:props.nameofuser});
+
+    if (props.login_status == "1") {
+      this.setState({ logged_in: "Yes", usr_type: props.user_type, usr_name: props.nameofuser });
     }
   }
   handleLogout(e) {
@@ -105,7 +105,7 @@ class App extends Component {
     axios.post("/api/logout", { withCredentials: true })
       .then(res => {
         if (res.data.logout_status == "1") {
-          this.setState({ logged_in: "No", usr_type: "None" ,usr_name:"None"});
+          this.setState({ logged_in: "No", usr_type: "None", usr_name: "None" });
         }
 
       })
@@ -150,19 +150,25 @@ class App extends Component {
                         <Redirect to="/userType-lawyer" />
                         : (this.state.usr_type == "Judge") ?
                           <Redirect to="/userType-judge" />
-                          :null
-                          : <Login handlelogin={this.handleLogin} />           
+                          : null
+                    : <Login handlelogin={this.handleLogin} />
                 }
-                
+
               </Route>
               <Route exact path="/userType-judge">
                 {
-                  this.state.logged_in=="Yes"?
-                  <Judge name={this.state.usr_name} handlelogout = {this.handleLogout}/>
-                  :<Redirect to = "/login"/>
+                  this.state.logged_in == "Yes" ?
+                    <Judge name={this.state.usr_name} handlelogout={this.handleLogout} />
+                    : <Redirect to="/login" />
                 }
               </Route>
-              <Route exact path="/userType-lawyer"><Lawyer name={this.state.usr_name} /></Route>
+              <Route exact path="/userType-lawyer">
+                {
+                  this.state.logged_in == "Yes" ?
+                    <Lawyer name={this.state.usr_name} handlelogout={this.handleLogout} />
+                    : <Redirect to="/login" />
+                }
+              </Route>
               <Route exact path="/userType-registrar"><Registrar name={this.state.usr_name} /></Route>
               <Route exact path="/case-report"><CourtCase /></Route>
             </Switch>
