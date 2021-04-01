@@ -90,14 +90,23 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { logged_in: "No", usr_type: "None", usr_name: "None" };
+    this.state = { logged_in: "No", usr_type: "None", usr_name: "None" ,usr_due_amt: "0"};
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
+    this.handleDueAmt = this.handleDueAmt.bind(this);
   }
   handleLogin(props) {
 
     if (props.login_status == "1") {
-      this.setState({ logged_in: "Yes", usr_type: props.user_type, usr_name: props.nameofuser });
+      this.setState({ logged_in: "Yes", usr_type: props.user_type, usr_name: props.nameofuser,usr_due_amt: props.due_amt });
+    }
+  }
+  handleDueAmt(props)
+  {
+    if(this.state.logged_in=="Yes"&&this.state.usr_type=="Lawyer")
+    {
+      this.setState({usr_due_amt:props.due_amt});
+      console.log('App.js  :: ',this.state.usr_due_amt);
     }
   }
   handleLogout(e) {
@@ -118,13 +127,17 @@ class App extends Component {
   LoggedIn() {
     axios.get("/api/isLoggedIn", { withCredentials: true })
       .then(res => {
-        if (this.state.logged_in == "No" & res.data.login_status == '1') {
-          this.setState({ logged_in: "Yes", usr_type: res.data.user_type });
+        if (res.data.login_status == '1') {
+          this.setState({ 
+            logged_in: "Yes", 
+            usr_type: res.data.user_type, 
+            usr_name: res.data.nameofuser,
+            usr_due_amt: res.data.due_amt
+           });
         }
-        else if (this.state.logged_in == "Yes" & res.data.login_status == '0') {
+        else if (this.state.logged_in == "Yes" & res.data.login_status == '0') {          
           this.setState({ login: "No", usr_type: "None" });
         }
-
       });
   }
   componentDidMount() {
@@ -144,7 +157,7 @@ class App extends Component {
                 {
                   (this.state.logged_in == "Yes") ?
                     (this.state.usr_type == "Registrar") ?
-                      <Redirect to="/home" />
+                      <Redirect to="/userType-registrar" />
                       :
                       (this.state.usr_type == "Lawyer") ?
                         <Redirect to="/userType-lawyer" />
@@ -165,11 +178,17 @@ class App extends Component {
               <Route exact path="/userType-lawyer">
                 {
                   this.state.logged_in == "Yes" ?
-                    <Lawyer name={this.state.usr_name} handlelogout={this.handleLogout} />
+                    <Lawyer name={this.state.usr_name} due_amt ={this.state.usr_due_amt} handleDueAmt={this.handleDueAmt} handlelogout={this.handleLogout} />
                     : <Redirect to="/login" />
                 }
               </Route>
-              <Route exact path="/userType-registrar"><Registrar name={this.state.usr_name} /></Route>
+              <Route exact path="/userType-registrar">
+                {
+                  this.state.logged_in=="Yes" ?
+                  <Registrar name={this.state.usr_name} />
+                  : <Redirect to = "/login"/>
+                }
+              </Route>
               <Route exact path="/case-report"><CourtCase /></Route>
             </Switch>
           </header>

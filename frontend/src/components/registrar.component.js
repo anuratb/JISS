@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import GridLayout from 'react-grid-layout';
 
 import Dropdown from "react-dropdown";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,7 +7,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import './registrar.css';
 import { BrowserRouter as Router } from "react-router-dom";
-
+import LogoutButton from "./logoutbutton"
 export default class Registrar extends Component {
     constructor(props) {
         super(props);
@@ -19,6 +20,7 @@ export default class Registrar extends Component {
             <Router>
                 <div className="Registrar">
                     <div className="Registrar-header">
+                    <LogoutButton handlelogout={this.props.handlelogout} />
                         <h1>Welcome, {this.state.name}</h1>
                         <br />
                         <br />

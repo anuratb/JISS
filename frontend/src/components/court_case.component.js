@@ -1,5 +1,5 @@
 import GridLayout from 'react-grid-layout';
-import React, { Component, useMemo, useState, useEffect } from "react";
+import React, { Component } from "react";
 
 import Table from "./table.js";
 import "./court-case.css";
@@ -61,7 +61,7 @@ export default class CourtCase extends Component {
     
   }
   render() {
-    fetch("/api/account").then(res => res.json()).then(res => { console.log(res); });
+    //fetch("/api/account").then(res => res.json()).then(res => { console.log(res); });
     // layout is an array of objects, see the demo for more complete usage
     const layout = [
       { i: '1', x: 0, y: 0, w: 5, h: 2, static: true },

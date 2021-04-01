@@ -38,6 +38,7 @@ class SearchById extends Component {
             .then(res => {
                 console.log(res.data);
                 this.props.handleviewCase(res.data.case_details);
+                this.props.handleDueAmt({'due_amt':res.data.due_amt});
             });
 
 
@@ -77,6 +78,7 @@ class SearchByKey extends Component {
             .then(res => {
                 console.log(res.data);
                 this.props.handleviewCaseId(res.data.cin_list);
+                this.props.handleDueAmt({'due_amt':res.data.due_amt});
             });
     }
     render() {
@@ -94,24 +96,30 @@ class SearchByKey extends Component {
 class Lawyer extends Component {
     constructor(props) {
         super(props);
+        console.log(props);
         this.state = {
             name: props.name,
-            comp: null, 
-            curr_casedata: null, 
-            searchrecv_id: false,             
-            searchrecv_Key:false,
-            curr_caseIdList:[]
+            due_amt: props.due_amt,
+            comp: null,
+            curr_casedata: null,
+            searchrecv_id: false,
+            searchrecv_Key: false,
+            curr_caseIdList: []
         };
         this.OnCriteriaChange = this.OnCriteriaChange.bind(this);
         this.handleviewCase = this.handleviewCase.bind(this);
         this.handleviewCaseId = this.handleviewCaseId.bind(this);
         this.goback = this.goback.bind(this);
         this.handleviewreqCase = this.handleviewreqCase.bind(this);
+        this.handleDueAmt = this.handleDueAmt.bind(this);
     }
-    handleviewreqCase(props)
-    {
+    handleDueAmt(props) {
+        this.setState({ due_amt: props.due_amt });
+        this.props.handleDueAmt(props);
+    }
+    handleviewreqCase(props) {
         console.log(props);
-        alert("Searching for"+props.data.cin);
+        alert("Searching for" + props.data.cin);
         const requestOptions = {
             'cin': props.data.cin,
         };
@@ -122,36 +130,33 @@ class Lawyer extends Component {
             });
     }
     goback() {
-        if(this.state.searchrecv_Key)
-        {
-            if(this.state.searchrecv_id)
-            {
-                this.setState({searchrecv_id: false});
+        if (this.state.searchrecv_Key) {
+            if (this.state.searchrecv_id) {
+                this.setState({ searchrecv_id: false });
             }
-            else
-            {
-                this.setState({searchrecv_Key:false});
+            else {
+                this.setState({ searchrecv_Key: false });
             }
         }
-        else
-        {
-            this.setState({searchrecv_id:false});
+        else {
+            this.setState({ searchrecv_id: false });
         }
-        
+
     }
+    
     OnCriteriaChange(event) {
         if (event.target.value === "ById") {
-            this.setState({ comp: <SearchById handleviewCase={this.handleviewCase} /> });
+            this.setState({ comp: <SearchById handleviewCase={this.handleviewCase} handleDueAmt={this.handleDueAmt} /> });
         }
         else if (event.target.value === "ByKeyword") {
-            this.setState({ comp: <SearchByKey handleviewCaseId={this.handleviewCaseId} /> });
+            this.setState({ comp: <SearchByKey handleviewCaseId={this.handleviewCaseId} handleDueAmt={this.handleDueAmt} /> });
         }
         else {
             this.setState({ comp: null });
         }
 
     }
-    
+
     handleviewCase(props) {
         this.setState({ searchrecv_id: true, curr_casedata: props });
         //console.log(this.state.curr_casedata);
@@ -160,23 +165,24 @@ class Lawyer extends Component {
         /**
          * props : List of all {'cin':'<CIN>','crime_type':'<CRIME_TYPE>'}
          */
-        this.setState({  curr_caseIdList: props ,searchrecv_Key: true,});
-        console.log('Handle View Case Lawyer: ',this.state.curr_caseIdList);
+        this.setState({ curr_caseIdList: props, searchrecv_Key: true, });
+        console.log('Handle View Case Lawyer: ', this.state.curr_caseIdList);
     }
     render() {
-        
-        if (this.state.searchrecv_id) {            
+
+        if (this.state.searchrecv_id) {
             return (<CourtCase case_data={this.state.curr_casedata} goback={this.goback} />);
         }
-        else if (this.state.searchrecv_Key)
-        {
-            return (<DispCIN cin_list={this.state.curr_caseIdList} handleselect = {this.handleviewreqCase} goback ={this.goback}/>);
+        else if (this.state.searchrecv_Key) {
+            return (<DispCIN cin_list={this.state.curr_caseIdList} handleselect={this.handleviewreqCase} goback={this.goback} />);
         }
         return (
             <Router>
 
                 <div className="Lawyer">
-                    <div className="Lawyer-header">
+                    <div className="Lawyer-header">                        
+                        <p>Due Amount :{this.state.due_amt}</p>
+                        <br/><br/>
                         <h1>Welcome, {this.state.name}</h1>
                         <br />
                     Search Old Case:
