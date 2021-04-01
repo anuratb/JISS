@@ -185,7 +185,7 @@ class App extends Component {
               <Route exact path="/userType-registrar">
                 {
                   this.state.logged_in=="Yes" ?
-                  <Registrar name={this.state.usr_name} />
+                  <Registrar name={this.state.usr_name} handlelogout={this.handleLogout}/>
                   : <Redirect to = "/login"/>
                 }
               </Route>

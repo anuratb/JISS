@@ -8,68 +8,66 @@ import "react-datepicker/dist/react-datepicker.css";
 import './registrar.css';
 import { BrowserRouter as Router } from "react-router-dom";
 import LogoutButton from "./logoutbutton"
+import AddUser from "./addUser.component";
 export default class Registrar extends Component {
     constructor(props) {
         super(props);
-        this.state = { name: props.name, comp: null };
+        this.state = { name: props.name, comp: null, selected_usecase: "None" };
+        this.OnCriteriaChange = this.OnCriteriaChange.bind(this);
     }
-
+    OnCriteriaChange(event) {
+        this.setState({ selected_usecase: event.target.value });
+    }
     render() {
+        if (this.state.selected_usecase != "None") {
+            if(this.state.selected_usecase=="AddUser")
+            {
+                return (<AddUser/>);
+            }
+            else if(this.state.selected_usecase=="RemoveUser")
+            {
 
-        return (
-            <Router>
-                <div className="Registrar">
-                    <div className="Registrar-header">
-                    <LogoutButton handlelogout={this.props.handlelogout} />
-                        <h1>Welcome, {this.state.name}</h1>
-                        <br />
-                        <br />
-                        <form>
-                            Add User:
-                        <select className="Registrar-dropdown-header" defaultValue="Option-Select" >
-                                <option value="Option-Select" >Select An Option</option>
-                                <option value="Lawyer" >Lawyer</option>
-                                <option value="Judge">Judge</option>
-                            </select>
-                            <button type="submit" className="btn btn-primary btn-block">Add Selected User</button>
-                        </form>
-                        <br />
-                        <br />
-                        <form>
-                            Delete User:
-                            <select className="Registrar-dropdown-header" defaultValue="Option-Select" >
-                                <option value="Option-Select" >Select An Option</option>
-                                <option value="Lawyer" >Lawyer</option>
-                                <option value="Judge">Judge</option>
-                            </select>
-                            <button type="submit" className="btn btn-primary btn-block">Add Selected User</button>
-                        </form>
-                        <br />
-                        <br />
-                        <button >Entry Case Report:</button>
-                        <br />
-                        <br />
-                        Search free Slots:<br />
-                        Enter Day: <DatePicker />
-                        <br />
-                        <br />
-                        <h2>Query Section</h2>
-                        <br />
-                        { /**
-                        *The currently pending court cases
-The cases that have been resolved over any given time
-The cases that are coming up for hearing on a particular date
-The status of any particular case identified by the CIN.
+            }
+            else if(this.state.selected_usecase=="ViewFreeSlots")
+            {
 
-                       */}
-                        <form>
-                            Enter Case ID to Query:
-                            <input type="text" />
-                            <button type="submit" className="btn btn-primary btn-block">Add Selected User</button>
-                        </form>
+            }
+            else if(this.state.selected_usecase=="ViewPendingCases")
+            {
+
+            }
+            else if(this.state.selected_usecase=="ViewResolvedCases")
+            {
+
+            }
+            else if(this.state.selected_usecase=="ViewUpcomingCasesByDate")
+            {
+                
+            }
+
+        }
+        else {
+            return (
+                <Router>
+                    <div className="Registrar">
+                        <div className="Registrar-header">
+                           <p> Welcome , {this.state.name}</p>
+                            <select className="Registrar-dropdown-header" defaultValue="None" onChange={this.OnCriteriaChange}>
+                                <option value="None" >Select An Option</option>
+                                <option value="AddUser" >Add User</option>
+                                <option value="RemoveUser">Search By Keyword</option>
+                                <option value="ViewFreeSlots">View Free Slots</option>
+                                <option value="ViewPendingCases">View Pending Cases</option>
+                                <option value="ViewResolvedCases">View Resolved Cases</option>
+                                <option value="ViewUpcomingCasesByDate">View Upcoming Cases On a Date</option>
+                            </select>
+                            <p/>
+                            <LogoutButton handlelogout={this.props.handlelogout} />
+                        </div>
                     </div>
-                </div>
-            </Router>
-        );
+                </Router>
+            );
+        }
+
     }
 }
