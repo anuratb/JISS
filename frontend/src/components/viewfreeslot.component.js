@@ -1,0 +1,195 @@
+import React, { Component } from "react";
+import GridLayout from 'react-grid-layout';
+import axios from 'axios';
+import Dropdown from "react-dropdown";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import './registrar.css';
+import { BrowserRouter as Router } from "react-router-dom";
+import LogoutButton from "./logoutbutton"
+import './form.css';
+import AddCase from './createcase.component';
+import { PropertyKeys } from "ag-grid-community";
+
+class DispSlots extends Component {
+    /**
+     * @param: props : {handleSelectSlot, free_slot:{slot1: "1",...}}
+     */
+    constructor(props) {
+        super(props);
+        this.handleSubmit = this.handleSubmit.bind(this);
+
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        this.props.handleSelectSlot({ 'selected_slot': e.target.value });
+    }
+    render() {
+        return (
+            <div>
+                <button
+                    onClick={this.props.goback}
+                    style={{ marginLeft: "auto" }}
+                    className="btn btn-primary "
+                >
+                    Go Back
+                </button>
+                <form onSubmit={this.handleSubmit} >
+                    <div className="form-group">
+                        <label>Select Slot:</label>
+                        <label>
+                            <select className="form-control" defaultValue="None" name="usr_type" onChange={this.handleChange}>
+                                <option value="None">Select Slot</option>
+                                {this.props.free_slot.slot1 == "1" ? <option value="slot1">Slot 1</option> : null}
+                                {this.props.free_slot.slot2 == "1" ? <option value="slot2">Slot 2</option> : null}
+                                {this.props.free_slot.slot3 == "1" ? <option value="slot3">Slot 3</option> : null}
+                                {this.props.free_slot.slot4 == "1" ? <option value="slot4">Slot 4</option> : null}
+                                {this.props.free_slot.slot5 == "1" ? <option value="slot5">Slot 5</option> : null}
+                            </select>
+                        </label>
+                    </div>
+                    <div className="form-group">
+                        <button type="submit" className="btn btn-primary btn-block">Submit</button>
+                    </div>
+                </form>
+            </div>
+        );
+    }
+}
+export default class ViewFreeSlot extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            val: "0",
+            free_slot: null,
+            query_date: new Date(),
+            pending_case_list: [],
+            selected_slot: null,
+            query_date_error: false,
+            selected_cin :""
+        };
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.setPendingCases = this.setPendingCases.bind(this);
+        this.handleSelectSlot = this.handleSelectSlot.bind(this);
+        this.goback = this.goback.bind(this);
+    }
+    goback() {
+        //REset the state
+        this.setState({ val: "0", selected_slot: null });
+    }
+    handleSelectSlot(props) {
+        console.log('Handle Select Slots ', props);
+        this.setState({ selected_slot: props.selected_slot, val: "2" });
+    }
+    setPendingCases(props) {
+        this.setState({ pending_case_list: props.pending_case_list });
+    }
+    handleSubmit(e) {
+        e.preventDefault();
+        if (!this.state.query_date) {
+            this.state.query_date_error = true;
+        }
+        else {
+            this.state.query_date_error = false;
+            const requestOptions = {
+                'day': this.state.query_date.getDate().toString(),
+                'month': (this.state.query_date.getMonth()+1).toString(),
+                'year': this.state.query_date.getFullYear().toString()
+            };
+            console.log(requestOptions);
+            axios.post('/api/queryFreeSlot', requestOptions)
+                .then(res => {
+                    console.log(res.data);
+                    this.setState({ free_slot: res.data.free_slot, val: "1" });
+                })
+                .catch(err => {
+                    alert('Error in Server ' + err.response.status);
+                    console.log(err.response);
+                });
+        }
+    }
+
+    handleChange(date) {
+        this.setState({ query_date: date });
+        if (date == null) {
+            this.state.query_date_error = true;
+        }
+        else {
+            this.state.query_date_error = false;
+        }
+    }
+    render() {
+        if(this.state.val=="4")
+        {
+            return(
+                <h1>Give Adjournment Details for CIN:{this.state.selected_cin}</h1>
+            );
+        }
+        else if(this.state.val=="3")
+        {
+            return(
+                <Router>
+                    <div className="Registrar">
+                        <div className="Registrar-header">
+                            <AddCase getAddedCIN = {(cin)=>{this.setState({selected_cin:cin,val:"4"})}} hearing_slot="1" hearing_date ={this.state.query_date} goback={()=>{this.setState({val:"1"})}}/>
+                        </div>
+                    </div>
+                </Router>
+            );
+        }
+        else if (this.state.val == "2") {
+            //When free slots have been chosen
+            return (
+                <Router>
+                    <div className="Registrar">
+                        <div className="Registrar-header">
+                            <button className="btn btn-primary " onClick={()=>{this.setState({val:"3"})}}>Create New Case</button>
+                            <h3>Select From Pending Cases</h3>
+                        </div>
+                    </div>
+                </Router>
+            );
+        }
+        else if (this.state.val == "1") {
+            return (
+                <Router>
+                    <div className="Registrar">
+                        <div className="Registrar-header">
+                            {this.state.free_slot != null ? <DispSlots goback={this.goback} handleSelectSlot={this.handleSelectSlot} free_slot={this.state.free_slot} /> : null}
+                        </div>
+                    </div>
+                </Router>
+            );
+        }
+        else {
+            return (
+                <Router>
+                    <div className="Registrar">
+                        <div className="Registrar-header">
+                            <button
+                                onClick={this.props.goback}
+                                style={{ marginLeft: "auto" }}
+                                className="btn btn-primary "
+                            >
+                                Go Back
+                        </button>
+                            <form onSubmit={this.handleSubmit}>
+                                <h3>Query Free Slots</h3>
+                                <div className="form-group">
+                                    Enter Date: <DatePicker dateFormat="dd-MM-y" selected={this.state.query_date} onChange={this.handleChange} />
+                                    {this.state.query_date_error? <div style={{ color: "red" }}>Query Date cannot be Empty</div> : ""}
+                                </div>
+                                <div className="form-group">
+                                    <button type="submit" className="btn btn-primary btn-block">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </Router>
+            );
+        }
+    }
+}

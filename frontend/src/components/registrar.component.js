@@ -10,6 +10,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import LogoutButton from "./logoutbutton"
 import AddUser from "./addUser.component";
 import RemoveUser from "./removeUser.component";
+import ViewFreeSlot from "./viewfreeslot.component";
 export default class Registrar extends Component {
     constructor(props) {
         super(props);
@@ -33,7 +34,7 @@ export default class Registrar extends Component {
                 return (<RemoveUser goback={this.goback}/>);
             }
             else if (this.state.selected_usecase == "ViewFreeSlots") {
-
+                return (<ViewFreeSlot goback = {this.goback}/>);
             }
             else if (this.state.selected_usecase == "ViewPendingCases") {
 

@@ -94,7 +94,7 @@ export default class AddUser extends Component {
                     }
                     else {
                         alert('User Added Successfully');
-                       // this.props.goback();//Optional
+                        // this.props.goback();//Optional
                     }
                 })
                 .catch(err => {
@@ -110,30 +110,24 @@ export default class AddUser extends Component {
             if (e.target.value == "None") {
                 this.setState({ usr_type_error: true });
             }
-            else
-            {
-                this.setState({usr_type_error:false});
+            else {
+                this.setState({ usr_type_error: false });
             }
         }
-        else if(e.target.name=="password"){
-            if(e.target.value.length<4)
-            {
-                this.setState({password_error:true});
+        else if (e.target.name == "password") {
+            if (e.target.value.length < 4) {
+                this.setState({ password_error: true });
             }
-            else
-            {
-                this.setState({password_error:false});
+            else {
+                this.setState({ password_error: false });
             }
         }
-        else
-        {
-            if(e.target.value=="")
-            {
-                this.setState({[e.target.name+"_error"]:true});
+        else {
+            if (e.target.value == "") {
+                this.setState({ [e.target.name + "_error"]: true });
             }
-            else
-            {
-                this.setState({[e.target.name+"_error"]:false});
+            else {
+                this.setState({ [e.target.name + "_error"]: false });
             }
         }
     }
@@ -155,7 +149,7 @@ export default class AddUser extends Component {
                             <div className="form-group">
                                 <label>Name</label>
                                 <input type="text" name="usr_name" onChange={this.handleChange} className="form-control" placeholder="EnterName" />
-                                {this.state.usr_name_error ? <div style={{color:"red"}}>Name cannot be Empty</div> : ""}
+                                {this.state.usr_name_error ? <div style={{ color: "red" }}>Name cannot be Empty</div> : ""}
                             </div>
                             <div className="form-group">
                                 <label>User Type:</label>
@@ -166,23 +160,23 @@ export default class AddUser extends Component {
                                         <option value="Judge">Judge</option>
                                     </select>
                                 </label>
-                                {this.state.usr_type_error ? <div style={{color:"red"}}>User Type must be Selected</div> : ""}
+                                {this.state.usr_type_error ? <div style={{ color: "red" }}>User Type must be Selected</div> : ""}
                             </div>
                             <div className="form-group">
                                 <label>User Address</label>
                                 <input type="text" name="usr_addr" onChange={this.handleChange} className="form-control" placeholder="EnterUserAddr" />
-                                {this.state.usr_addr_error ? <div style={{color:"red"}}>Address cannot be Empty</div> : ""}
+                                {this.state.usr_addr_error ? <div style={{ color: "red" }}>Address cannot be Empty</div> : ""}
                             </div>
                             <div className="form-group">
                                 <label>Username</label>
                                 <input type="text" name="username" onChange={this.handleChange} className="form-control" placeholder="EnterUsername" />
-                                {this.state.username_error ? <div style={{color:"red"}}>Username cannot be Empty</div> : ""}
+                                {this.state.username_error ? <div style={{ color: "red" }}>Username cannot be Empty</div> : ""}
                             </div>
                             <br />
                             <div className="form-group">
                                 <label>Password</label>
                                 <input type="password" name="password" onChange={this.handleChange} className="form-control" placeholder="EnterPassword" />
-                                {this.state.password_error ? <div style={{color:"red"}}>At least 4 characters</div> : ""}
+                                {this.state.password_error ? <div style={{ color: "red" }}>At least 4 characters</div> : ""}
                             </div>
                             <div className="form-group">
                                 <button type="submit" className="btn btn-primary btn-block">Submit</button>
