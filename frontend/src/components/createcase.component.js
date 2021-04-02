@@ -170,32 +170,32 @@ export default class AddCase extends Component {
                 'def_addr': this.state.def_addr,
                 'crime_Type': this.state.crime_type,
                 'crime_date': {
-                    'date': this.state.crime_date.getDate().toString(),
+                    'day': this.state.crime_date.getDate().toString(),
                     'month': (this.state.crime_date.getMonth()+1).toString(),
                     'year': this.state.crime_date.getFullYear().toString()
                 },
                 'crime_loc': this.state.crime_loc,
                 'arresting_off_name': this.state.arresting_off_name,
                 'arrest_date': {
-                    'date': this.state.arrest_date.getDate().toString(),
+                    'day': this.state.arrest_date.getDate().toString(),
                     'month': (this.state.arrest_date.getMonth()+1).toString(),
                     'year': this.state.arrest_date.getFullYear().toString()
                 },
                 'name_pres_judge': this.state.name_pres_judge,
                 'public_prosecutor_name': this.state.public_prosecutor_name,
                 'starting_date': {
-                    'date': this.state.starting_date.getDate().toString(),
+                    'day': this.state.starting_date.getDate().toString(),
                     'month': (this.state.starting_date.getMonth()+1).toString(),
                     'year': this.state.starting_date.getFullYear().toString()
                 },
                 'expected_completion_date': this.state.expected_completion_date ? {
-                    'date': this.state.expected_completion_date.getDate().toString(),
+                    'day': this.state.expected_completion_date.getDate().toString(),
                     'month': (this.state.expected_completion_date.getDate()+1).toString(),
                     'year': this.state.expected_completion_date.getDate().toString()
                 } : "-1",
                 'hearing_slot': this.state.hearing_slot ? this.state.hearing_slot : "-1",
                 'hearing_date': this.state.hearing_date ? {
-                    'date': this.state.hearing_date.getDate().toString(),
+                    'day': this.state.hearing_date.getDate().toString(),
                     'month': (this.state.hearing_date.getMonth()+1).toString(),
                     'year': this.state.hearing_date.getFullYear().toString()
                 } : "-1"

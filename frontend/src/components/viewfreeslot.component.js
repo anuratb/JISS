@@ -11,6 +11,7 @@ import LogoutButton from "./logoutbutton"
 import './form.css';
 import AddCase from './createcase.component';
 import { PropertyKeys } from "ag-grid-community";
+import ViewPendingCases from "./viewPendingCases.component";
 
 class DispSlots extends Component {
     /**
@@ -146,8 +147,16 @@ export default class ViewFreeSlot extends Component {
                 <Router>
                     <div className="Registrar">
                         <div className="Registrar-header">
+                        <button
+                                onClick={()=>{this.setState({val:"1"})}}
+                                style={{ marginLeft: "auto" }}
+                                className="btn btn-primary "
+                            >
+                                Go Back
+                        </button>
                             <button className="btn btn-primary " onClick={()=>{this.setState({val:"3"})}}>Create New Case</button>
                             <h3>Select From Pending Cases</h3>
+                            <ViewPendingCases handleselect={(props)=>{this.setState({selected_cin:props.data.cin,val:"4"})}} />
                         </div>
                     </div>
                 </Router>
@@ -175,7 +184,7 @@ export default class ViewFreeSlot extends Component {
                                 className="btn btn-primary "
                             >
                                 Go Back
-                        </button>
+                            </button>
                             <form onSubmit={this.handleSubmit}>
                                 <h3>Query Free Slots</h3>
                                 <div className="form-group">
