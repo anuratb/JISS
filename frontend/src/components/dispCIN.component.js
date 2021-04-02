@@ -12,6 +12,7 @@ export default class DispCIN extends Component {
         console.log("DISP:: ",props);
         //Details of the Court Case
         if (props.cin_list == null) {
+            //default values for testings 
             this.state = {
                 cin_list_data: [{ cin: "1", crime_type: "Theft" }, { cin: "2", crime_type: "theft" }],
                 selected_cin: ""
@@ -40,7 +41,8 @@ export default class DispCIN extends Component {
         return (
             <div className="DispCIN-header">
                 <div className="ag-theme-balham-dark" style={{ height: 400, width: 600 }}>
-                    <AgGridReact
+                {console.log(this.state.cin_list_data)}
+                    <AgGridReact                       
                         rowData={this.state.cin_list_data}>
                         <AgGridColumn onCellClicked={this.props.handleselect} field="cin"></AgGridColumn>
                         <AgGridColumn field="crime_type"></AgGridColumn>

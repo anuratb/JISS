@@ -111,7 +111,7 @@ class Judge extends Component {
     handleviewreqCase(props)
     {
         console.log(props);
-        alert("Searching for"+props.data.cin);
+        alert("Getting Details for"+props.data.cin);
         const requestOptions = {
             'cin': props.data.cin,
         };
