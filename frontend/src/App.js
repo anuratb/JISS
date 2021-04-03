@@ -82,10 +82,7 @@ class LoginMgnt extends React.Component {
   }
 }
 */
-function Bad_Login() {
-  this.message = "Invalid Login";
-  this.name = "Bad_Login";
-}
+
 class App extends Component {
 
   constructor(props) {

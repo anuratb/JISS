@@ -60,7 +60,7 @@ class DispSlots extends Component {
         }
 
         if (!flag) {
-            this.props.handleSelectSlot({ 'selected_slot': e.target.value });
+            this.props.handleSelectSlot({ 'selected_slot': this.state.selected_slot });
         }
 
     }
@@ -113,7 +113,43 @@ export default class ViewFreeSlot extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.setPendingCases = this.setPendingCases.bind(this);
         this.handleSelectSlot = this.handleSelectSlot.bind(this);
+        this.handleAssignHearingDate = this.handleAssignHearingDate.bind(this);
         this.goback = this.goback.bind(this);
+    }
+    handleAssignHearingDate() {
+        console.log('Assign Hearing Date');
+
+
+        var req = {
+            "cin": this.state.selected_cin,
+            "slot": (
+                this.state.selected_slot=="slot1"?"1"
+                :this.state.selected_slot=="slot2"?"2"
+                :this.state.selected_slot=="slot3"?"3"
+                :this.state.selected_slot=="slot4"?"4"
+                :"5"
+                ),
+            "date": {
+                "day": this.state.query_date.getDate().toString(),
+                "month": (this.state.query_date.getMonth() + 1).toString(),
+                "year": this.state.query_date.getFullYear().toString()
+
+            }
+        }
+        axios.post('/api/assignHearingSlot', req)
+            .then(res => {
+                if (res.data.confirm == "0") {
+                    alert(res.data.message);
+                }
+                else {
+                    alert("Hearing for Case with CIN " + this.state.selected_cin + "sheduled for " + this.state.query_date + ", at slot," + this.state.selected_slot);
+
+                }
+            })
+            .catch(err => {
+                err.response ? alert('Error in Server ' + err.response.status) : console.log(err);
+            });
+
     }
     goback() {
         //REset the state
@@ -121,7 +157,7 @@ export default class ViewFreeSlot extends Component {
     }
     handleSelectSlot(props) {
         console.log('Handle Select Slots ', props);
-        this.setState({ selected_slot: props.selected_slot, val: "2" });
+        this.setState({ selected_slot: props.selected_slot },()=>{console.log(this.state); this.setState({val:"2"})});
     }
     setPendingCases(props) {
         this.setState({ pending_case_list: props.pending_case_list });
@@ -129,10 +165,11 @@ export default class ViewFreeSlot extends Component {
     handleSubmit(e) {
         e.preventDefault();
         if (!this.state.query_date) {
-            this.state.query_date_error = true;
+            this.setState({query_date_error:true});
+            
         }
         else {
-            this.state.query_date_error = false;
+            this.setState({query_date_error:false});            
             const requestOptions = {
                 'day': this.state.query_date.getDate().toString(),
                 'month': (this.state.query_date.getMonth() + 1).toString(),
@@ -154,10 +191,11 @@ export default class ViewFreeSlot extends Component {
     handleChange(date) {
         this.setState({ query_date: date });
         if (date == null) {
-            this.state.query_date_error = true;
+            this.setState({query_date_error:true});
+            
         }
         else {
-            this.state.query_date_error = false;
+            this.setState({query_date_error:false});
         }
     }
     render() {
@@ -179,7 +217,7 @@ export default class ViewFreeSlot extends Component {
                 <Router>
                     <div className="Registrar">
                         <div className="Registrar-header">
-                            <AddCase getAddedCIN={(cin) => { this.setState({ selected_cin: cin, val: "4" }) }} hearing_slot="1" hearing_date={this.state.query_date} goback={() => { this.setState({ val: "1" }) }} />
+                            <AddCase getAddedCIN={(cin) => { this.setState({ selected_cin: cin }, () => this.handleAssignHearingDate());this.setState({val:"4"});  }} hearing_slot="1" hearing_date={this.state.query_date} goback={() => { this.setState({ val: "1" }) }} />
                         </div>
                     </div>
                 </Router>
@@ -200,13 +238,14 @@ export default class ViewFreeSlot extends Component {
                             </button>
                             <button className="btn btn-primary " onClick={() => { this.setState({ val: "3" }) }}>Create New Case</button>
                             <h3>Select From Pending Cases</h3>
-                            <ViewPendingCases handleselect={(props) => { this.setState({ selected_cin: props.data.cin, val: "4" }) }} />
+                            <ViewPendingCases handleselect={(props) => { this.setState({ selected_cin: props.data.cin }, () => this.handleAssignHearingDate()); this.setState({val:"4"}); }} />
                         </div>
                     </div>
                 </Router>
             );
         }
         else if (this.state.val == "1") {
+            //Chose slot
             return (
                 <Router>
                     <div className="Registrar">

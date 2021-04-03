@@ -190,8 +190,8 @@ export default class AddCase extends Component {
                 },
                 'expected_completion_date': this.state.expected_completion_date ? {
                     'day': this.state.expected_completion_date.getDate().toString(),
-                    'month': (this.state.expected_completion_date.getDate()+1).toString(),
-                    'year': this.state.expected_completion_date.getDate().toString()
+                    'month': (this.state.expected_completion_date.getMonth()+1).toString(),
+                    'year': this.state.expected_completion_date.getFullYear().toString()
                 } : "-1",
                 'hearing_slot': this.state.hearing_slot ? this.state.hearing_slot : "-1",
                 'hearing_date': this.state.hearing_date ? {

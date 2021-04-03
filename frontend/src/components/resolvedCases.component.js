@@ -84,7 +84,7 @@ export default class QueryResolved extends Component {
                     console.log(res.data);
                     if (res.data.confirm == "0") {
                         alert(res.data.message);
-                        this.setState({ case_status: "" });
+                        this.setState({ data_recv: false });
                     }
                     else {
                         this.setState({
@@ -95,6 +95,7 @@ export default class QueryResolved extends Component {
                                         cin: item.cin,
                                         starting_date: new Date(parseInt(item.starting_date.year), parseInt(item.starting_date.month) - 1, parseInt(item.starting_date.day)),
                                         name_pres_judge: item.name_pres_judge,
+                                        latest_date: new Date(parseInt(item.latest_date.year), parseInt(item.latest_date.month) - 1, parseInt(item.latest_date.day)),
                                         case_summary: item.case_summary
                                     }
                                 );
@@ -118,7 +119,7 @@ export default class QueryResolved extends Component {
         else {
             this.setState({ [e.target.name + "_error"]: false });
         }
-        this.setState({ case_status: "" });
+        this.setState({ data_recv: false });
     }
     render() {
         return (
@@ -164,6 +165,7 @@ export default class QueryResolved extends Component {
                                         <AgGridColumn field="starting_date" sortable="true"></AgGridColumn>
                                         <AgGridColumn field="cin"></AgGridColumn>                                        
                                         <AgGridColumn field="name_pres_judge"></AgGridColumn>
+                                        <AgGridColumn field="latest_date"></AgGridColumn>
                                         <AgGridColumn field="case_summary"></AgGridColumn>                                        
                                     </AgGridReact>
                                 </div>

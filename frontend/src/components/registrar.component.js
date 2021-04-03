@@ -14,6 +14,7 @@ import ViewFreeSlot from "./viewfreeslot.component";
 import QueryResolved from "./resolvedCases.component";
 import QueryStatus from "./queryStatus.component";
 import ViewPendingCases from "./viewPendingCases.component";
+import ViewUpcomingCasesByDate from "./viewUpcomingByDate.component"
 export default class Registrar extends Component {
     constructor(props) {
         super(props);
@@ -49,7 +50,7 @@ export default class Registrar extends Component {
                 return (<QueryResolved goback={this.goback}/>);
             }
             else if (this.state.selected_usecase == "ViewUpcomingCasesByDate") {
-
+                return (<ViewUpcomingCasesByDate goback={this.goback}/>)
             }
 
         }
