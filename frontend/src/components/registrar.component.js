@@ -11,6 +11,9 @@ import LogoutButton from "./logoutbutton"
 import AddUser from "./addUser.component";
 import RemoveUser from "./removeUser.component";
 import ViewFreeSlot from "./viewfreeslot.component";
+import QueryResolved from "./resolvedCases.component";
+import QueryStatus from "./queryStatus.component";
+import ViewPendingCases from "./viewPendingCases.component";
 export default class Registrar extends Component {
     constructor(props) {
         super(props);
@@ -36,11 +39,14 @@ export default class Registrar extends Component {
             else if (this.state.selected_usecase == "ViewFreeSlots") {
                 return (<ViewFreeSlot goback = {this.goback}/>);
             }
+            else if (this.state.selected_usecase == "QueryStatus") {
+                return (<QueryStatus goback ={this.goback}/>);
+            }
             else if (this.state.selected_usecase == "ViewPendingCases") {
-
+                return (<ViewPendingCases goback={this.goback}/>);
             }
             else if (this.state.selected_usecase == "ViewResolvedCases") {
-
+                return (<QueryResolved goback={this.goback}/>);
             }
             else if (this.state.selected_usecase == "ViewUpcomingCasesByDate") {
 
@@ -61,6 +67,7 @@ export default class Registrar extends Component {
                                 <option value="ViewPendingCases">View Pending Cases</option>
                                 <option value="ViewResolvedCases">View Resolved Cases</option>
                                 <option value="ViewUpcomingCasesByDate">View Upcoming Cases On a Date</option>
+                                <option value="QueryStatus">Query Status By CIN</option>
                             </select>
                             <p />
                             <LogoutButton handlelogout={this.props.handlelogout} />

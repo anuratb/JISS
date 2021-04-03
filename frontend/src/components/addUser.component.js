@@ -105,31 +105,33 @@ export default class AddUser extends Component {
 
     }
     handleChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
-        if (e.target.name == "usr_type") {
-            if (e.target.value == "None") {
-                this.setState({ usr_type_error: true });
+        this.setState({ [e.target.name]: e.target.value }, () => {
+            if (e.target.name == "usr_type") {
+                if (e.target.value == "None") {
+                    this.setState({ usr_type_error: true });
+                }
+                else {
+                    this.setState({ usr_type_error: false });
+                }
+            }
+            else if (e.target.name == "password") {
+                if (e.target.value.length < 4) {
+                    this.setState({ password_error: true });
+                }
+                else {
+                    this.setState({ password_error: false });
+                }
             }
             else {
-                this.setState({ usr_type_error: false });
+                if (e.target.value == "") {
+                    this.setState({ [e.target.name + "_error"]: true });
+                }
+                else {
+                    this.setState({ [e.target.name + "_error"]: false });
+                }
             }
-        }
-        else if (e.target.name == "password") {
-            if (e.target.value.length < 4) {
-                this.setState({ password_error: true });
-            }
-            else {
-                this.setState({ password_error: false });
-            }
-        }
-        else {
-            if (e.target.value == "") {
-                this.setState({ [e.target.name + "_error"]: true });
-            }
-            else {
-                this.setState({ [e.target.name + "_error"]: false });
-            }
-        }
+        });
+
     }
     render() {
         return (

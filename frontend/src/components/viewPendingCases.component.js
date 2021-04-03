@@ -14,6 +14,9 @@ import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham-dark.css';
 
+/**
+ * props: handleselect,goback
+ */
 export default class ViewPendingCases extends Component {
     constructor(props) {
         super(props);
@@ -54,11 +57,23 @@ export default class ViewPendingCases extends Component {
         return (<Router>
             <div className="Registrar">
                 <div className="Registrar-header">
-                    <div className="ag-theme-balham-dark" style={{ height: 400, width: 1000 }}>
+                    {
+                        this.props.goback ?
+                            <button
+                                onClick={this.props.goback}
+                                style={{ marginLeft: "auto" }}
+                                className="btn btn-primary "
+                            >
+                                Go Back
+                            </button>
+                            : null
+                    }
 
+                    <h4>Pending Cases: </h4>
+                    <div className="ag-theme-balham-dark" style={{ height: 400, width: 1000 }}>
                         <AgGridReact
                             rowData={this.state.case_list}>
-                            <AgGridColumn onCellClicked={this.props.handleselect} field="cin"></AgGridColumn>
+                            <AgGridColumn onCellClicked={this.props.handleselect ? this.props.handleselect : null} field="cin" sortable="true"></AgGridColumn>
                             <AgGridColumn field="def_name"></AgGridColumn>
                             <AgGridColumn field="def_addr"></AgGridColumn>
                             <AgGridColumn field="crime_type"></AgGridColumn>
