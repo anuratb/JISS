@@ -194,7 +194,7 @@ class App extends Component {
                     (this.state.logged_in == "Yes") ?
                     (this.state.usr_type == "Registrar") ?
                     <ViewFreeSlot {...props} goback="/userType-registrar"/>
-                      :null
+                      :<Login handlelogin={this.handleLogin} />  
                     : <Login handlelogin={this.handleLogin} />                    
                   )
                 }

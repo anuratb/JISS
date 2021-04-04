@@ -70,6 +70,10 @@ export default class Login extends Component {
             axios.post('/api/login', requestOptions)
                 .then(res => {
                     console.log(res.data);
+                    if(res.data.login_status=="0")
+                    {
+                        alert("Invalid Username or Password");
+                    }
                     this.props.handlelogin(res.data);
 
                 });
@@ -96,11 +100,13 @@ export default class Login extends Component {
                             <div className="form-group">
                                 <label>Username</label>
                                 <input type="text" name="username" onChange={this.handleChange} className="form-control" placeholder="Enter Username" />
+                                {this.state.username_error ? <div style={{ color: "red" }}>Username cannot be Empty</div> : ""}
                             </div>
                             <br />
                             <div className="form-group">
                                 <label>Password</label>
                                 <input type="password" name="password" onChange={this.handleChange} className="form-control" placeholder="Enter password" />
+                                {this.state.password_error ? <div style={{ color: "red" }}>Password cannot be Empty</div> : ""}
                             </div>
                             {/*
                     <div className="form-group">

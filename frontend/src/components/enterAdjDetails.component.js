@@ -72,6 +72,12 @@ export default class AdjForm extends Component {
             this.setState({ case_summary_error: false });
             errors.case_summary_error = false;
         }
+        //Data validation
+        if(this.state.reason.includes("|"))
+        {
+            alert("Reason should not contain '|' ");
+            flag = true;
+        }
 
         if (!flag) {
             const requestOptions = {
@@ -142,6 +148,15 @@ export default class AdjForm extends Component {
             else {
                 this.setState({ case_summary_error: false });
             }
+        }
+        if(this.state.reason.includes("|"))
+        {
+            alert("Reason should not contain '|' ");
+            this.setState({reason_error:true});
+        }
+        else
+        {
+            this.setState({reason_error:false});
         }
     }
     render() {
