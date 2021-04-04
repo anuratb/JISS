@@ -163,6 +163,28 @@ export default class AddCase extends Component {
             this.setState({ starting_date_error: false });
             errors.starting_date_error = false;
         }
+
+        //Some data consistency checks
+        if(this.state.crime_date>this.state.arrest_date)
+        {
+            alert('Crime date cannot be after arrest date');
+            flag = true;
+        }
+        if(this.state.hearing_date && this.state.hearing_date<this.state.arrest_date)
+        {
+            alert('Arrest Date cannot be after hearing date');
+            flag = true;
+        }
+        if(this.state.starting_date<this.state.arrest_date)
+        {
+            alert('Arrest Date cannot be After starting date');
+            flag = true;
+        }
+        if(this.state.hearing_date && this.state.starting_date>this.state.hearing_date)
+        {
+            alert('Starting Date cannot be After hearing date');
+            flag = true;
+        }
         
         if (!flag) {
             const requestOptions = {

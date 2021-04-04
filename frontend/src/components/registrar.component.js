@@ -16,6 +16,8 @@ import QueryStatus from "./queryStatus.component";
 import ViewPendingCases from "./viewPendingCases.component";
 import ViewUpcomingCasesByDate from "./viewUpcomingByDate.component"
 import CloseCase from "./closecase.component"
+import AdjForm from './enterAdjDetails.component'
+import AddCase from "./createcase.component"
 class Registrar extends Component {
     constructor(props) {
         super(props);
@@ -66,6 +68,12 @@ class Registrar extends Component {
             else if (this.state.selected_usecase == "CloseCase") {
                 return (<CloseCase goback={this.goback}/>)
             }
+            else if (this.state.selected_usecase=="EntryAdj"){
+                return (<AdjForm goback={this.goback}/>);
+            }
+            else if (this.state.selected_usecase=="AddCase"){
+                return (<AddCase goback={this.goback}/>);
+            }
 
         }
         else {
@@ -85,6 +93,7 @@ class Registrar extends Component {
                                 <option value="QueryStatus">Query Status By CIN</option>
                                 <option value="EntryAdj">Entry Adjournment Details</option>
                                 <option value="CloseCase">Close Case</option>
+                                <option value="AddCase">Add New Case</option>
                             </select>
                             <p />
                             <LogoutButton handlelogout={this.props.handlelogout} />

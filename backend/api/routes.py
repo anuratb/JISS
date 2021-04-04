@@ -18,6 +18,35 @@ if(not 'site.db' in os.listdir('./api')):
 # ************Functions****************
 
 
+def resolved_case_list(jsonobj):
+    ret_dict = {}
+    try:
+        y = jsonobj
+        beg_date = datetime.datetime(int(y["beg_date"]["year"]),int(y["beg_date"]["month"]),int(y["beg_date"]["day"]))
+        end_date = datetime.datetime(int(y["end_date"]["year"]),int(y["end_date"]["month"]),int(y["end_date"]["day"]))
+        record = CourtCase.query.filter(CourtCase.starting_date.between(beg_date,end_date)).filter_by(is_closed=True).order_by(CourtCase.starting_date).all()
+        ret_dict["confirm"] = 1
+        ret_dict["case_list"] = []
+        for i in record:
+            temp_dict = {}
+            temp_dict['cin'] = i.cin
+            temp_dict['name_pres_judge'] = i.judge_name
+            temp_dict['starting_date'] = {}
+            temp_dict['starting_date']['month'] = str(i.starting_date.month)
+            temp_dict['starting_date']['day'] = str(i.starting_date.day)
+            temp_dict['starting_date']['year'] = str(i.starting_date.year)
+            temp_dict['latest_date'] = {}
+            temp_dict['latest_date']['month'] = str(i.hearing_date.month)
+            temp_dict['latest_date']['day'] = str(i.hearing_date.day)
+            temp_dict['latest_date']['year'] = str(i.hearing_date.year)
+            temp_dict['case_summary'] = i.summary
+            ret_dict["case_list"].append(temp_dict)
+    except:
+        ret_dict["confirm"] = "0"
+        ret_dict["message"] = "Sorry!! There was a problem in viewing the resolved case list!!"
+    ret_json = json.dumps(ret_dict)
+    return ret_json
+
 def search_by_key(key, username):
     search_by_key_charge = 100
     record = User.query.filter_by(username=username).first()
@@ -597,6 +626,8 @@ def getPendingCase():
 @ login_required
 def queryResolved():
     print(flask.request.get_json())
+    return resolved_case_list(flask.request.get_json())
+    '''
     return {
         "confirm": "1",
         "case_list": [
@@ -624,7 +655,7 @@ def queryResolved():
             }
         ]
     }
-
+'''
 
 @ app.route("/api/queryUpcomingByDate", methods=['GET', 'POST'])
 @ login_required

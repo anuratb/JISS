@@ -21,28 +21,62 @@ class Welcome extends Component {
 export default class Login extends Component {
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '' };
+        this.state = { username: '', password: '', username_error: false, password_error: false };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
+        if (event.target.value == "") {
+            this.setState({ [event.target.name + '_error']: true });
+        }
     }
     handleSubmit(event) {
         //console.log('Submitting'); //For Debug
-        alert('A username was submitted: ' + this.state.username);
-        const requestOptions = {
-            'username': this.state.username, 'password': this.state.password
+        var errors = {
+            username_error: false,
+            password_error: true
         };
-        console.log("LoggingIn ")
-        axios.post('/api/login', requestOptions)
-            .then(res => {
-                console.log(res.data);
-                this.props.handlelogin(res.data);
-                
-            });
-        event.preventDefault();
+        var flag = false;
+
+        //Form Validation
+        if (this.state.username == "") {
+            this.setState({ username_error: true });
+            errors.username_error = true;
+            flag = true;
+        }
+        else {
+            this.setState({ username_error: false });
+            errors.username_error = false;
+        }
+
+        if (this.state.password == "") {
+            this.setState({ password_error: true });
+            errors.password_error = true;
+            flag = true;
+        }
+        else {
+            this.setState({ password_error: false });
+            errors.password_error = false;
+        }
+
+        if (!flag) {
+            //alert('A username was submitted: ' + this.state.username);
+            const requestOptions = {
+                'username': this.state.username, 'password': this.state.password
+            };
+            console.log("LoggingIn ")
+            axios.post('/api/login', requestOptions)
+                .then(res => {
+                    console.log(res.data);
+                    this.props.handlelogin(res.data);
+
+                });
+            event.preventDefault();
+        }
+
+
 
 
     }

@@ -64,7 +64,13 @@ export default class QueryResolved extends Component {
             errors.end_date_error = false;
         }
 
+        //Data Consistency Check
 
+        if(this.state.beg_date>this.state.end_date)
+        {
+            alert('Start Date Cannot be After End date');
+            flag = true;
+        }
 
         if (!flag) {
             const requestOptions = {
