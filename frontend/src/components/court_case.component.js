@@ -1,5 +1,9 @@
 import GridLayout from 'react-grid-layout';
 import React, { Component } from "react";
+import { AgGridColumn, AgGridReact } from 'ag-grid-react';
+
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-balham-dark.css';
 
 import Table from "./table.js";
 import "./court-case.css";
@@ -13,8 +17,7 @@ export default class CourtCase extends Component {
       this.state = {
         def_name: "",
         def_addr: "",
-        pros_name: "",
-        pros_addr: "",
+        pros_name: "",        
         crime_Type: "",
         crime_date: "",
         crime_loc: "",
@@ -35,20 +38,19 @@ export default class CourtCase extends Component {
         this.state = {
           def_name: props.case_data.def_name,
           def_addr: props.case_data.def_addr,
-          pros_name: props.case_data.pros_name,
-          pros_addr: props.case_data.pros_addr,
+          pros_name: props.case_data.pros_name,          
           crime_Type: props.case_data.crime_Type,
           crime_date: props.case_data.crime_date,
           crime_loc: props.case_data.crime_loc,
           arresting_off_name: props.case_data.arresting_off_name,
           date_arrest: props.case_data.date_arrest,
-          CIN: props.case_data.cin,
+          CIN: props.case_data.CIN,
           date_hearing: props.case_data.date_hearing,
           latest_hearing_date: props.case_data.latest_hearing_date,
           case_hearing_details: props.case_data.adj_details,
           name_pres_judge: props.case_data.name_pres_judge,
           start_date: props.case_data.start_date,
-          expected_completion_of_trial: props.case_data.completion_date
+          expected_completion_of_trial: props.case_data.expected_completion_date
         };
         console.log('Adjourn Details : ',this.state.case_hearing_details);
         
@@ -85,9 +87,7 @@ export default class CourtCase extends Component {
             <br />
             <b>Defendent Address :</b> {this.state.def_addr}
             <br /><br />
-            <b>Prosecutor Name :</b> {this.state.pros_name}
-            <br />
-            <b>Prosecutor Address :</b> {this.state.pros_addr}
+            <b>Prosecutor Name :</b> {this.state.pros_name}            
             <br /><br />
             <b>Hearing Date: </b>{this.state.date_hearing}
             <br />
@@ -109,8 +109,14 @@ export default class CourtCase extends Component {
           <div key="3">
             <h2>Summary of Hearings</h2>
 
-            <Table columns={columns} data={this.state.case_hearing_details}></Table>
-
+            
+            <div className="ag-theme-balham-dark" style={{ height: 300, width: 600 }}>                
+                    <AgGridReact                       
+                        rowData={this.state.case_hearing_details}>
+                        <AgGridColumn field="date"></AgGridColumn>
+                        <AgGridColumn field="reason"></AgGridColumn>
+                    </AgGridReact>
+              </div>
 
           </div>
         </GridLayout>

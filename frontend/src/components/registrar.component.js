@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import './registrar.css';
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router,Redirect ,withRouter} from "react-router-dom";
 import LogoutButton from "./logoutbutton"
 import AddUser from "./addUser.component";
 import RemoveUser from "./removeUser.component";
@@ -15,10 +15,11 @@ import QueryResolved from "./resolvedCases.component";
 import QueryStatus from "./queryStatus.component";
 import ViewPendingCases from "./viewPendingCases.component";
 import ViewUpcomingCasesByDate from "./viewUpcomingByDate.component"
-export default class Registrar extends Component {
+import CloseCase from "./closecase.component"
+class Registrar extends Component {
     constructor(props) {
         super(props);
-        this.state = { name: props.name, comp: null, selected_usecase: "None" };
+        this.state = { name: props.name, comp: null, selected_usecase: "None",comp:null};
         this.OnCriteriaChange = this.OnCriteriaChange.bind(this);
         this.goback = this.goback.bind(this);
     }
@@ -30,6 +31,7 @@ export default class Registrar extends Component {
         this.setState({ selected_usecase: event.target.value });
     }
     render() {
+        
         if (this.state.selected_usecase != "None") {
             if (this.state.selected_usecase == "AddUser") {
                 return (<AddUser goback={this.goback}/>);
@@ -38,19 +40,31 @@ export default class Registrar extends Component {
                 return (<RemoveUser goback={this.goback}/>);
             }
             else if (this.state.selected_usecase == "ViewFreeSlots") {
-                return (<ViewFreeSlot goback = {this.goback}/>);
+                return (<ViewFreeSlot goback = {this.goback}/>   );
             }
             else if (this.state.selected_usecase == "QueryStatus") {
-                return (<QueryStatus goback ={this.goback}/>);
+                return (
+                    <Router><QueryStatus goback ={this.goback}/></Router>
+                );
             }
             else if (this.state.selected_usecase == "ViewPendingCases") {
-                return (<ViewPendingCases goback={this.goback}/>);
+                return (
+                    <Router>
+                        
+                        <ViewPendingCases handleselect={(props)=>{this.props.history.push(`/assignslot/${props.data.cin}`)}} goback={this.goback}/>                        
+                        {this.state.comp}
+                    </Router>
+                
+                );//TODO
             }
             else if (this.state.selected_usecase == "ViewResolvedCases") {
                 return (<QueryResolved goback={this.goback}/>);
             }
             else if (this.state.selected_usecase == "ViewUpcomingCasesByDate") {
                 return (<ViewUpcomingCasesByDate goback={this.goback}/>)
+            }
+            else if (this.state.selected_usecase == "CloseCase") {
+                return (<CloseCase goback={this.goback}/>)
             }
 
         }
@@ -69,6 +83,8 @@ export default class Registrar extends Component {
                                 <option value="ViewResolvedCases">View Resolved Cases</option>
                                 <option value="ViewUpcomingCasesByDate">View Upcoming Cases On a Date</option>
                                 <option value="QueryStatus">Query Status By CIN</option>
+                                <option value="EntryAdj">Entry Adjournment Details</option>
+                                <option value="CloseCase">Close Case</option>
                             </select>
                             <p />
                             <LogoutButton handlelogout={this.props.handlelogout} />
@@ -81,3 +97,4 @@ export default class Registrar extends Component {
 
     }
 }
+export default withRouter(Registrar);

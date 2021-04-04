@@ -88,36 +88,34 @@ export default class AdjForm extends Component {
                     else {
 
                         alert('Adjournment Details Added Successfully');
-                        if(!this.state.closed) this.props.goback();
+                        if (!this.state.closed) this.props.goback();
+                        if (this.state.closed) {
+                            const req = {
+                                'cin': this.state.cin,
+                                'case_summary': this.state.case_summary
+                            }
+                            axios.post('/api/closeCase', req)
+                                .then(res => {
+                                    console.log('Close Case Response', res.data);
+                                    if (res.data.confirm == "0") {
+                                        alert(res.data.message);
+                                    }
+                                    else {
+                                        alert('Case ' + this.state.cin + ' was closed successfully ');
+                                        this.props.goback();
+                                    }
+                                })
+                                .catch(err => {
+                                    err.response ? alert('Error in Server ' + err.response.status) : console.log(err);
+                                });
+                        }
                     }
                 })
                 .catch(err => {
                     err.response ? alert('Error in Server ' + err.response.status) : console.log(err);
                 });
 
-            if(this.state.closed)
-            {
-                const req = {
-                    'cin' :this.state.cin,
-                    'case_summary':this.state.case_summary
-                }
-                axios.post('/api/closeCase',req)
-                .then(res=>{
-                    console.log('Close Case Response',res.data);
-                    if(res.data.confirm=="0")
-                    {
-                        alert(res.data.message);
-                    }
-                    else
-                    {
-                        alert('Case '+this.state.cin+' was closed successfully ');
-                        this.props.goback();
-                    }
-                })
-                .catch(err => {
-                    err.response ? alert('Error in Server ' + err.response.status) : console.log(err);
-                });
-            }
+
         }
 
     }
@@ -151,13 +149,17 @@ export default class AdjForm extends Component {
             <Router>
                 <div className="Registrar">
                     <div className="Registrar-header">
-                        <button
-                            onClick={this.props.goback}
-                            style={{ marginLeft: "auto" }}
-                            className="btn btn-primary "
-                        >
-                            Go Back
-                    </button>
+                        {
+                            typeof (this.props.goback) == "string" ?
+                                <a href={this.props.goback}>Go Back</a>
+                                : <button
+                                    onClick={this.props.goback}
+                                    style={{ marginLeft: "auto" }}
+                                    className="btn btn-primary "
+                                >
+                                    Go Back
+                                </button>
+                        }
                         <form onSubmit={this.handleSubmit}>
                             <h3>Add Adjournment Details</h3>
 

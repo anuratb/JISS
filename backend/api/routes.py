@@ -18,6 +18,101 @@ if(not 'site.db' in os.listdir('./api')):
 # ************Functions****************
 
 
+def search_by_key(key, username):
+    search_by_key_charge = 100
+    record = User.query.filter_by(username=username).first()
+    ret_dict = {}
+    if record is None:
+        ret_dict2 = {}
+        ret_dict2["confirm"] = "0"
+        ret_dict2["message"] = "Please enter a valid username!!"
+        ret_json2 = json.dumps(ret_dict2)
+        return ret_json2
+    else:
+        if record.user_type == 'Lawyer':
+            record.due_amount = record.due_amount + search_by_key_charge
+            db.session.commit()
+            ret_dict['due_amt'] = str(record.due_amount)
+        rec = CourtCase.query.all()
+        ret_dict["confirm"] = "1"
+        ret_dict["message"] = "The search was successful!!"
+        ret_dict['cin_list'] = []
+        for i in rec:
+
+            str_row = ""
+            str_row = str_row + i.defendent_name + " " + i.defendent_address + " " + i.judge_name + " " + i.crime_type + \
+                " " + i.crime_location + " " + i.arresting_officer_name + \
+                " " + i.public_prosecutor_name + " "
+            if i.hearing_details is not None:
+                str_row = str_row + i.hearing_details
+            if i.summary is not None:
+                str_row = str_row + i.summary
+            if key in str_row:
+                temp_dict = {}
+                temp_dict['cin'] = i.cin
+                temp_dict['crime_type'] = i.crime_type
+                temp_dict['name_pres_judge'] = i.judge_name
+                temp_dict['start_date'] = str(
+                    i.starting_date.day)+"-"+str(i.starting_date.month)+"-"+str(i.starting_date.year)
+                ret_dict['cin_list'].append(temp_dict)
+        ret_json = json.dumps(ret_dict)
+        return ret_json
+
+
+def search_by_id(cin_str, username):
+    search_by_id_charge = 100
+    ret_dict = {}
+    ret_dict['due_amt'] = "0"
+    cin = int(cin_str)
+    i = CourtCase.query.get(cin)
+    if i is None:
+        ret_dict["confirm"] = "0"
+        ret_dict["message"] = "Please search for a valid CIN number!!"
+    else:
+        ret_dict['case_details'] = {}
+        ret_dict['case_details']['CIN'] = str(i.cin)
+        ret_dict['case_details']['def_name'] = i.defendent_name
+        ret_dict['case_details']['def_addr'] = i.defendent_address
+        ret_dict['case_details']['crime_Type'] = i.crime_type
+        ret_dict['case_details']['crime_date'] = str(
+            i.crime_date.day)+"-"+str(i.crime_date.month)+"-"+str(i.crime_date.year)
+        ret_dict['case_details']['date_arrest'] = str(
+            i.date_of_arrest.day)+"-"+str(i.date_of_arrest.month)+"-"+str(i.date_of_arrest.year)
+        ret_dict['case_details']['start_date'] = str(
+            i.starting_date.day)+"-"+str(i.starting_date.month)+"-"+str(i.starting_date.year)
+        ret_dict['case_details']['latest_hearing_date'] = str(
+            i.hearing_date.day)+"-"+str(i.hearing_date.month)+"-"+str(i.hearing_date.year)
+        ret_dict['case_details']['expected_completion_date'] = str(
+            i.expected_completion_date.day)+"-"+str(i.expected_completion_date.month)+"-"+str(i.expected_completion_date.year)
+        ret_dict['case_details']['crime_loc'] = i.crime_location
+        ret_dict['case_details']['arresting_off_name'] = i.arresting_officer_name
+        ret_dict['case_details']['name_pres_judge'] = i.judge_name
+        ret_dict['case_details']['pros_name'] = i.public_prosecutor_name
+        ret_dict['case_details']['adj_details'] = []
+        adj = i.hearing_details
+        if adj is not None:
+            for x in adj.split('|'):
+                jobj = json.loads(x)
+                temp_dict = {}
+                temp_dict["date"] = jobj["date"]
+                temp_dict["reason"] = jobj["reason"]
+                ret_dict['case_details']['adj_details'].append(temp_dict)
+        record = User.query.filter_by(username=username).first()
+        if record is None:
+            ret_dict2 = {}
+            ret_dict2["confirm"] = "0"
+            ret_dict2["messaage"] = "Please enter a valid username!!"
+            ret_json2 = json.dumps(ret_dict2)
+            return ret_json2
+        else:
+            if record.user_type == 'Lawyer':
+                record.due_amount = record.due_amount + search_by_id_charge
+                db.session.commit()
+                ret_dict['due_amt'] = str(record.due_amount)
+        ret_json = json.dumps(ret_dict)
+        return ret_json
+
+
 def court_cases_by_date(json_obj):
     ret_dict = {}
     try:
@@ -98,35 +193,34 @@ def unresolved_case_list():
 
 def schedule_case(jsonobj):
     ret_dict = {}
-    # try:
-    y = jsonobj
-    cin = int(y['cin'])
-    slot = int(y['slot'])
-    new_hearing_date = datetime.datetime(
-        int(y["date"]["year"]), int(y["date"]["month"]), int(y["date"]["day"]))
-    record = CourtCase.query.filter_by(cin=cin).first()
-    if record is None:
-        ret_dict['confirm'] = "0"
-        ret_dict['message'] = "The given CIN does not exist!!"
-    elif record.hearing_date >= new_hearing_date:
-        ret_dict['confirm'] = "0"
-        ret_dict['message'] = "The new hearing date cannot be older than the previous one!!"
-    else:
-        record.hearing_date = new_hearing_date
+    try:
+        y = jsonobj
+        cin = int(y['cin'])
+        slot = int(y['slot'])
+        new_hearing_date = datetime.datetime(
+            int(y["date"]["year"]), int(y["date"]["month"]), int(y["date"]["day"]))
+        record = CourtCase.query.filter_by(cin=cin).first()
+        if record is None:
+            ret_dict['confirm'] = "0"
+            ret_dict['message'] = "The given CIN does not exist!!"
+        elif record.hearing_date >= new_hearing_date:
+            ret_dict['confirm'] = "0"
+            ret_dict['message'] = "The new hearing date cannot be older than the previous one!!"
+        else:
+            record.hearing_date = new_hearing_date
 
-        record.hearing_slot = slot
-        db.session.commit()
-        print(record.hearing_date)  # DEBUG
-        add_to_slotlist(cin, slot, record.hearing_date.year,
-                        record.hearing_date.month, record.hearing_date.date)
-                        #ERROR-------------------------------^^^^^^^^^----
-        ret_dict['confirm'] = "1"
-        ret_dict["message"] = "New hearing date assigned successfully!!"
-    '''
+            record.hearing_slot = slot
+            db.session.commit()
+            print(record.hearing_date)  # DEBUG
+            add_to_slotlist(cin, slot, record.hearing_date.year,
+                            record.hearing_date.month, record.hearing_date.day)
+
+            ret_dict['confirm'] = "1"
+            ret_dict["message"] = "New hearing date assigned successfully!!"
+
     except:
         ret_dict['confirm'] = "0"
         ret_dict['message'] = "There was a problem assigning a new hearing date!"
-        '''
 
     ret_json = json.dumps(ret_dict)
     return ret_json
@@ -135,7 +229,7 @@ def schedule_case(jsonobj):
 def adjournment_details_add(jsonobj):
     ret_dict = {}
     try:
-        y = json.loads(jsonobj)
+        y = jsonobj
         cin = int(y['cin'])
         reason = y['reason']
         record = CourtCase.query.filter_by(cin=cin).first()
@@ -159,7 +253,7 @@ def adjournment_details_add(jsonobj):
             if record.hearing_details is None:
                 record.hearing_details = adj_json
             else:
-                record.hearing_details = record.hearing_details + "," + adj_json
+                record.hearing_details = record.hearing_details + "|" + adj_json
             db.session.commit()
             ret_dict['confirm'] = "1"
             ret_dict['message'] = "Adjournment details added successfully!!"
@@ -346,7 +440,7 @@ def remove_lawyer_judge(json_obj):
 def isLoggedIn():
     if current_user.is_authenticated:
         print('Logged INN')
-        return jsonify({'login_status': '1', 'user_type': current_user.user_type, 'nameofuser': current_user.name})
+        return jsonify({'login_status': '1', 'user_type': current_user.user_type, 'nameofuser': current_user.name,'due_amt':current_user.due_amount})
     else:
         return {'login_status': '0'}
 
@@ -402,8 +496,11 @@ def searchbyKey():
     '''
     # do differently for usertype = judge and lawyer
     print(flask.request.get_json())
+    return search_by_key(flask.request.get_json()['key'], current_user.username)
+    '''
     return {'cin_list': [{'cin': '1', 'crime_type': 'theft'}, {'cin': '2', 'crime_type': 'theft'}],
             'due_amt': '0'}
+'''
 
 
 @ app.route("/api/addUser", methods=['GET', 'POST'])
@@ -432,7 +529,7 @@ def queryStatus():
     print(flask.request.get_json())
     # Check forcurrent user return Error if not Registrar
     print('Query Status')
-    return case_status_query(flask.request.json())
+    return case_status_query(flask.request.get_json())
     # return {'confirm': '1', 'case_status': 'Resolved', 'message': 'Success'}
     # return {'confirm':'0','message':'CIN doesnt exist'}
 
@@ -586,6 +683,9 @@ def searchbyId():
     # do differently for usertype = judge and lawyer
     print('Search by id')
     req = flask.request.get_json()
+    print(req)
+    return search_by_id(req['cin'], current_user.username)
+    '''
     if(req.get('cin') == '1'):
         return {'case_details': {
             'def_name': 'A1',
@@ -631,6 +731,7 @@ def searchbyId():
     # and other case details
     # for lawyer
     # {'case_details':{...},'due_amt':'Amount in string'}
+'''
 
 
 @ app.route("/api/assignHearingSlot", methods=['GET', 'POST'])

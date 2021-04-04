@@ -20,6 +20,7 @@ import {
 } from "react-router-dom";
 
 import Login from "./components/login.component";
+import ViewFreeSlot from './components/viewfreeslot.component';
 
 /*
 function LoggedInMessage(props) {
@@ -149,7 +150,7 @@ class App extends Component {
 
             <Switch>
               {/**Later all the routes which need to be protected will be changed to protected routes */}
-              <Route exact path="/home" ><Home user="ABCD" isLoggedIn={this.state.logged_in} handlelogout={this.handleLogout} /></Route>{/**For testing ProtectedRoute */}
+              <Route exact path="/home" ><Home user="ABCD" isLoggedIn={this.state.logged_in} handlelogout={this.handleLogout} /></Route>{/**For testing ProtectedRoute */}                            
               <Route exact path="/login">
                 {
                   (this.state.logged_in == "Yes") ?
@@ -186,7 +187,19 @@ class App extends Component {
                   : <Redirect to = "/login"/>
                 }
               </Route>
-              <Route exact path="/case-report"><CourtCase /></Route>
+              <Route exact path="/case-report"><div>Hi<CourtCase /></div></Route>
+              <Route exact path ="/assignslot/:cin"
+                render = {
+                  (props)=>(
+                    (this.state.logged_in == "Yes") ?
+                    (this.state.usr_type == "Registrar") ?
+                    <ViewFreeSlot {...props} goback="/userType-registrar"/>
+                      :null
+                    : <Login handlelogin={this.handleLogin} />                    
+                  )
+                }
+               />
+                
             </Switch>
           </header>
         </div>

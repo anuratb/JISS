@@ -97,9 +97,13 @@ class DispSlots extends Component {
         );
     }
 }
+/**
+ * props : cin,goback
+ */
 export default class ViewFreeSlot extends Component {
     constructor(props) {
         super(props);
+        console.log('View Free Slot')
         this.state = {
             val: "0",
             free_slot: null,
@@ -107,8 +111,10 @@ export default class ViewFreeSlot extends Component {
             pending_case_list: [],
             selected_slot: null,
             query_date_error: false,
-            selected_cin: ""
+            selected_cin: props.match ? props.match.params.cin : ""
         };
+        console.log(props.location);
+        console.log(this.state);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.setPendingCases = this.setPendingCases.bind(this);
@@ -123,12 +129,12 @@ export default class ViewFreeSlot extends Component {
         var req = {
             "cin": this.state.selected_cin,
             "slot": (
-                this.state.selected_slot=="slot1"?"1"
-                :this.state.selected_slot=="slot2"?"2"
-                :this.state.selected_slot=="slot3"?"3"
-                :this.state.selected_slot=="slot4"?"4"
-                :"5"
-                ),
+                this.state.selected_slot == "slot1" ? "1"
+                    : this.state.selected_slot == "slot2" ? "2"
+                        : this.state.selected_slot == "slot3" ? "3"
+                            : this.state.selected_slot == "slot4" ? "4"
+                                : "5"
+            ),
             "date": {
                 "day": this.state.query_date.getDate().toString(),
                 "month": (this.state.query_date.getMonth() + 1).toString(),
@@ -157,7 +163,15 @@ export default class ViewFreeSlot extends Component {
     }
     handleSelectSlot(props) {
         console.log('Handle Select Slots ', props);
-        this.setState({ selected_slot: props.selected_slot },()=>{console.log(this.state); this.setState({val:"2"})});
+        if (this.state.selected_cin == "") {
+            this.setState({ selected_slot: props.selected_slot }, () => { console.log(this.state); this.setState({ val: "2" }) });
+        }
+        else {
+            this.setState({ selected_slot: props.selected_slot }, () => { console.log(this.state); this.handleAssignHearingDate(); });
+            this.setState({ val: "4" });
+        }
+
+
     }
     setPendingCases(props) {
         this.setState({ pending_case_list: props.pending_case_list });
@@ -165,11 +179,11 @@ export default class ViewFreeSlot extends Component {
     handleSubmit(e) {
         e.preventDefault();
         if (!this.state.query_date) {
-            this.setState({query_date_error:true});
-            
+            this.setState({ query_date_error: true });
+
         }
         else {
-            this.setState({query_date_error:false});            
+            this.setState({ query_date_error: false });
             const requestOptions = {
                 'day': this.state.query_date.getDate().toString(),
                 'month': (this.state.query_date.getMonth() + 1).toString(),
@@ -191,11 +205,11 @@ export default class ViewFreeSlot extends Component {
     handleChange(date) {
         this.setState({ query_date: date });
         if (date == null) {
-            this.setState({query_date_error:true});
-            
+            this.setState({ query_date_error: true });
+
         }
         else {
-            this.setState({query_date_error:false});
+            this.setState({ query_date_error: false });
         }
     }
     render() {
@@ -217,7 +231,7 @@ export default class ViewFreeSlot extends Component {
                 <Router>
                     <div className="Registrar">
                         <div className="Registrar-header">
-                            <AddCase getAddedCIN={(cin) => { this.setState({ selected_cin: cin }, () => this.handleAssignHearingDate());this.setState({val:"4"});  }} hearing_slot="1" hearing_date={this.state.query_date} goback={() => { this.setState({ val: "1" }) }} />
+                            <AddCase getAddedCIN={(cin) => { this.setState({ selected_cin: cin }, () => this.handleAssignHearingDate()); this.setState({ val: "4" }); }} hearing_slot="1" hearing_date={this.state.query_date} goback={() => { this.setState({ val: "1" }) }} />
                         </div>
                     </div>
                 </Router>
@@ -238,7 +252,7 @@ export default class ViewFreeSlot extends Component {
                             </button>
                             <button className="btn btn-primary " onClick={() => { this.setState({ val: "3" }) }}>Create New Case</button>
                             <h3>Select From Pending Cases</h3>
-                            <ViewPendingCases handleselect={(props) => { this.setState({ selected_cin: props.data.cin }, () => this.handleAssignHearingDate()); this.setState({val:"4"}); }} />
+                            <ViewPendingCases handleselect={(props) => { this.setState({ selected_cin: props.data.cin }, () => this.handleAssignHearingDate()); this.setState({ val: "4" }); }} />
                         </div>
                     </div>
                 </Router>
@@ -261,13 +275,18 @@ export default class ViewFreeSlot extends Component {
                 <Router>
                     <div className="Registrar">
                         <div className="Registrar-header">
-                            <button
-                                onClick={this.props.goback}
-                                style={{ marginLeft: "auto" }}
-                                className="btn btn-primary "
-                            >
-                                Go Back
-                            </button>
+                            {
+                                typeof (this.props.goback) == "string" ?
+                                <a href={this.props.goback}>Go Back</a>
+                                : <button
+                                        onClick={this.props.goback}
+                                        style={{ marginLeft: "auto" }}
+                                        className="btn btn-primary "
+                                    >
+                                        Go Back
+                                </button>
+                            }
+
                             <form onSubmit={this.handleSubmit}>
                                 <h3>Query Free Slots</h3>
                                 <div className="form-group">
