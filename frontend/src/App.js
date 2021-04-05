@@ -10,7 +10,9 @@ import Lawyer from "./components/lawyer.component";
 import Registrar from "./components/registrar.component";
 import CourtCase from "./components/court_case.component";
 import Home from "./components/home";
-
+/**
+ * Main File Integrating all stuff
+ */
 import {
   BrowserRouter as Router,
   Switch,
@@ -22,73 +24,13 @@ import {
 import Login from "./components/login.component";
 import ViewFreeSlot from './components/viewfreeslot.component';
 
-/*
-function LoggedInMessage(props) {
-  return <h1>Welcome back!</h1>;
-}
 
-function GuestMesage(props) {
-  return (
-    <h1>Welcome to Judiciary Management System</h1>
-  );
-}
-
-function WelcomeMessage(props) {
-  const isLoggedIn = props.isLoggedIn;
-  if (isLoggedIn) { return <UserGreeting />; } return <GuestGreeting />;
-}
-
-
-function LoginButton(props) {
-  return (
-    <button onClick={props.onClick}>
-      Login
-    </button>
-  );
-}
-
-function LogoutButton(props) {
-  return (
-    <button onClick={props.onClick}>
-      Logout
-    </button>
-  );
-}
-
-class LoginMgnt extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleLoginClick = this.handleLoginClick.bind(this);
-    this.handleLogoutClick = this.handleLogoutClick.bind(this);
-    this.state = { isLoggedIn: false };//Initially not loggged in
-  }
-
-  handleLoginClick() {
-    this.setState({ isLoggedIn: true });
-  }
-
-  handleLogoutClick() {
-    this.setState({ isLoggedIn: false });
-  }
-
-  render() {
-    const isLoggedIn = this.state.isLoggedIn;
-    let button;
-    if (isLoggedIn) { button = <LogoutButton onClick={this.handleLogoutClick} />; } else { button = <LoginButton onClick={this.handleLoginClick} />; }
-    return (
-      <div>
-        <Greeting isLoggedIn={isLoggedIn} />
-        {button}      </div>
-    );
-  }
-}
-*/
 
 class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { logged_in: "No", usr_type: "None", usr_name: "None" ,usr_due_amt: "0"};
+    this.state = { logged_in: "No", usr_type: "None", usr_name: "None", usr_due_amt: "0" };
     this.handleLogin = this.handleLogin.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.handleDueAmt = this.handleDueAmt.bind(this);
@@ -96,15 +38,13 @@ class App extends Component {
   handleLogin(props) {
 
     if (props.login_status == "1") {
-      this.setState({ logged_in: "Yes", usr_type: props.user_type, usr_name: props.nameofuser,usr_due_amt: props.due_amt });
+      this.setState({ logged_in: "Yes", usr_type: props.user_type, usr_name: props.nameofuser, usr_due_amt: props.due_amt });
     }
   }
-  handleDueAmt(props)
-  {
-    if(this.state.logged_in=="Yes"&&this.state.usr_type=="Lawyer")
-    {
-      this.setState({usr_due_amt:props.due_amt});
-      console.log('App.js  :: ',this.state.usr_due_amt);
+  handleDueAmt(props) {
+    if (this.state.logged_in == "Yes" && this.state.usr_type == "Lawyer") {
+      this.setState({ usr_due_amt: props.due_amt });
+      console.log('App.js  :: ', this.state.usr_due_amt);
     }
   }
   handleLogout(e) {
@@ -116,24 +56,28 @@ class App extends Component {
         }
 
       })
-    //TODO Error handling aboove
+      .catch(err => {
+        err.response ? alert('Error in Server ' + err.response.status) : console.log(err);
+      });
+    
 
 
   }
   //fetch("/api/account").then(res => res.json()).then(res => { console.log(res); });
   //axios.post('api/logout',null)
   LoggedIn() {
+    //For checking if user is logged in
     axios.get("/api/isLoggedIn", { withCredentials: true })
       .then(res => {
         if (res.data.login_status == '1') {
-          this.setState({ 
-            logged_in: "Yes", 
-            usr_type: res.data.user_type, 
+          this.setState({
+            logged_in: "Yes",
+            usr_type: res.data.user_type,
             usr_name: res.data.nameofuser,
             usr_due_amt: res.data.due_amt
-           });
+          });
         }
-        else if (this.state.logged_in == "Yes" & res.data.login_status == '0') {          
+        else if (this.state.logged_in == "Yes" & res.data.login_status == '0') {
           this.setState({ login: "No", usr_type: "None" });
         }
       });
@@ -150,7 +94,7 @@ class App extends Component {
 
             <Switch>
               {/**Later all the routes which need to be protected will be changed to protected routes */}
-              <Route exact path="/home" ><Home user="ABCD" isLoggedIn={this.state.logged_in} handlelogout={this.handleLogout} /></Route>{/**For testing ProtectedRoute */}                            
+              <Route exact path="/home" ><Home user="ABCD" isLoggedIn={this.state.logged_in} handlelogout={this.handleLogout} /></Route>{/**For testing ProtectedRoute */}
               <Route exact path="/login">
                 {
                   (this.state.logged_in == "Yes") ?
@@ -176,30 +120,30 @@ class App extends Component {
               <Route exact path="/userType-lawyer">
                 {
                   this.state.logged_in == "Yes" ?
-                    <Lawyer name={this.state.usr_name} due_amt ={this.state.usr_due_amt} handleDueAmt={this.handleDueAmt} handlelogout={this.handleLogout} />
+                    <Lawyer name={this.state.usr_name} due_amt={this.state.usr_due_amt} handleDueAmt={this.handleDueAmt} handlelogout={this.handleLogout} />
                     : <Redirect to="/login" />
                 }
               </Route>
               <Route exact path="/userType-registrar">
                 {
-                  this.state.logged_in=="Yes" ?
-                  <Registrar name={this.state.usr_name} handlelogout={this.handleLogout}/>
-                  : <Redirect to = "/login"/>
+                  this.state.logged_in == "Yes" ?
+                    <Registrar name={this.state.usr_name} handlelogout={this.handleLogout} />
+                    : <Redirect to="/login" />
                 }
               </Route>
               <Route exact path="/case-report"><div>Hi<CourtCase /></div></Route>
-              <Route exact path ="/assignslot/:cin"
-                render = {
-                  (props)=>(
+              <Route exact path="/assignslot/:cin"
+                render={
+                  (props) => (
                     (this.state.logged_in == "Yes") ?
-                    (this.state.usr_type == "Registrar") ?
-                    <ViewFreeSlot {...props} goback="/userType-registrar"/>
-                      :<Login handlelogin={this.handleLogin} />  
-                    : <Login handlelogin={this.handleLogin} />                    
+                      (this.state.usr_type == "Registrar") ?
+                        <ViewFreeSlot {...props} goback="/userType-registrar" />
+                        : <Login handlelogin={this.handleLogin} />
+                      : <Login handlelogin={this.handleLogin} />
                   )
                 }
-               />
-                
+              />
+
             </Switch>
           </header>
         </div>

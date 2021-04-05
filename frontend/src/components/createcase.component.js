@@ -25,6 +25,7 @@ export default class AddCase extends Component {
             arrest_date: null,
             name_pres_judge: "",
             public_prosecutor_name: "",
+            public_prosecutor_addr: "",
             starting_date: null,
             expected_completion_date: null,
             hearing_slot: props.hearing_slot ? props.hearing_slot : "-1",
@@ -39,6 +40,7 @@ export default class AddCase extends Component {
             arrest_date_error: false,
             name_pres_judge_error: false,
             public_prosecutor_name_error: false,
+            public_prosecutor_addr_error: false,
             starting_date_error: false
 
         };
@@ -57,6 +59,7 @@ export default class AddCase extends Component {
             arrest_date_error: false,
             name_pres_judge_error: false,
             public_prosecutor_name_error: false,
+            public_prosecutor_addr_error:false,
             starting_date_error: false,
 
         }
@@ -80,6 +83,16 @@ export default class AddCase extends Component {
         else {
             this.setState({ public_prosecutor_name_error: false });
             errors.public_prosecutor_name_error = false;
+        }
+
+        if (this.state.public_prosecutor_addr == "") {
+            this.setState({ public_prosecutor_addr_error: true });
+            errors.public_prosecutor_addr_error = true;
+            flag = true;
+        }
+        else {
+            this.setState({ public_prosecutor_addr_error: false });
+            errors.public_prosecutor_addr_error = false;
         }
 
         if (this.state.def_addr == "") {
@@ -174,12 +187,7 @@ export default class AddCase extends Component {
         {
             alert('Arrest Date cannot be after hearing date');
             flag = true;
-        }
-        if(this.state.starting_date<this.state.arrest_date)
-        {
-            alert('Arrest Date cannot be After starting date');
-            flag = true;
-        }
+        }        
         if(this.state.hearing_date && this.state.starting_date>this.state.hearing_date)
         {
             alert('Starting Date cannot be After hearing date');
@@ -190,7 +198,7 @@ export default class AddCase extends Component {
             const requestOptions = {
                 'def_name': this.state.def_name,
                 'def_addr': this.state.def_addr,
-                'crime_Type': this.state.crime_type,
+                'crime_type': this.state.crime_type,
                 'crime_date': {
                     'day': this.state.crime_date.getDate().toString(),
                     'month': (this.state.crime_date.getMonth()+1).toString(),
@@ -205,6 +213,7 @@ export default class AddCase extends Component {
                 },
                 'name_pres_judge': this.state.name_pres_judge,
                 'public_prosecutor_name': this.state.public_prosecutor_name,
+                'public_prosecutor_addr': this.state.public_prosecutor_addr,
                 'starting_date': {
                     'day': this.state.starting_date.getDate().toString(),
                     'month': (this.state.starting_date.getMonth()+1).toString(),
@@ -315,13 +324,20 @@ export default class AddCase extends Component {
                                 <input type="text" name="name_pres_judge" onChange={this.handleChange} className="form-control" placeholder="Enter Presiding Judge Name" />
                                 {this.state.name_pres_judge_error ? <div style={{ color: "red" }}>Name cannot be Empty</div> : ""}
                             </div>
-
-
+                            
                             <div className="form-group">
                                 <label>Public Prosecutor Name: </label>
                                 <input type="text" name="public_prosecutor_name" onChange={this.handleChange} className="form-control" placeholder="Enter Public Prosecutor Name" />
                                 {this.state.public_prosecutor_name_error ? <div style={{ color: "red" }}>Name cannot be Empty</div> : ""}
                             </div>
+
+                            <div className="form-group">
+                                <label>Public Prosecutor Address: </label>
+                                <input type="text" name="public_prosecutor_addr" onChange={this.handleChange} className="form-control" placeholder="Enter Public Prosecutor Address" />
+                                {this.state.public_prosecutor_addr_error ? <div style={{ color: "red" }}>Address cannot be Empty</div> : ""}
+                            </div>
+
+                            
 
                             <div className="form-group">
                                 Starting Date: <DatePicker dateFormat="dd-MM-y" selected={this.state.starting_date} onChange={date => {

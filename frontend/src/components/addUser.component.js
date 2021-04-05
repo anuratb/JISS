@@ -45,7 +45,7 @@ export default class AddUser extends Component {
             this.setState({ usr_name_error: false });
             errors.usr_name_error = false;
         }
-        if (this.state.password.length < 4) {
+        if (this.state.password.length < 3) {
             this.setState({ password_error: true });
             errors.password_error = true;
         }
@@ -115,7 +115,7 @@ export default class AddUser extends Component {
                 }
             }
             else if (e.target.name == "password") {
-                if (e.target.value.length < 4) {
+                if (e.target.value.length < 3) {
                     this.setState({ password_error: true });
                 }
                 else {
@@ -178,7 +178,7 @@ export default class AddUser extends Component {
                             <div className="form-group">
                                 <label>Password</label>
                                 <input type="password" name="password" onChange={this.handleChange} className="form-control" placeholder="EnterPassword" />
-                                {this.state.password_error ? <div style={{ color: "red" }}>At least 4 characters</div> : ""}
+                                {this.state.password_error ? <div style={{ color: "red" }}>At least 3 characters</div> : ""}
                             </div>
                             <div className="form-group">
                                 <button type="submit" className="btn btn-primary btn-block">Submit</button>

@@ -17,28 +17,56 @@ import {
     Redirect
 } from "react-router-dom";
 
-
 class SearchById extends Component {
     constructor(props) {
         super(props);
-        this.state = { ID: "" };
+        this.state = { ID: "", ID_error: false };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
+        if (event.target.value == "") {
+            this.setState({ [event.target.name + '_error']: true });
+        }
+        else {
+            this.setState({ [event.target.name + '_error']: false });
+        }
     }
     handleSubmit(event) {
         event.preventDefault();
-        alert(this.state.ID + " was Submitted");
-        const requestOptions = {
-            'cin': this.state.ID,
-        };
-        axios.post('/api/searchbyId', requestOptions)
-            .then(res => {
-                console.log(res.data);
-                this.props.handleviewCase(res.data.case_details);
-            });
+
+        var flag = false;
+        if (this.state.ID == "") {
+            this.setState({ ID_error: true });
+            flag = true;
+        }
+        else {
+            this.setState({ ID_error: false });
+        }
+        if (!flag) {
+            alert(this.state.ID + " was Submitted");
+            const requestOptions = {
+                'cin': this.state.ID,
+            };
+            axios.post('/api/searchbyId', requestOptions)
+                .then(res => {
+                    console.log(res.data);
+                    if(res.data.confirm=="1")
+                    {
+                        this.props.handleviewCase(res.data.case_details); 
+                    }
+                    else
+                    {
+                        alert(res.data.message);
+                    }
+                                       
+                })
+                .catch(err => {
+                    err.response ? alert('Error in Server ' + err.response.status) : console.log(err);
+                });
+        }
+
 
 
     }
@@ -50,6 +78,7 @@ class SearchById extends Component {
                     <label>
                         Enter ID:
                     <input type="text" onChange={this.handleChange} name="ID" />
+                    {this.state.ID_error ? <div style={{ color: "red" }}>CIN cannot be Empty</div> : ""}
                     </label>
                     <input type="submit" value="Search" />
                 </form>
@@ -60,24 +89,41 @@ class SearchById extends Component {
 class SearchByKey extends Component {
     constructor(props) {
         super(props);
-        this.state = { Keyword: "" };
+        this.state = { Keyword: "", Keyword_error: false };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
+        if (event.target.value == "") {
+            this.setState({ [event.target.name + '_error']: true });
+        }
+        else {
+            this.setState({ [event.target.name + '_error']: false });
+        }
     }
     handleSubmit(event) {
         event.preventDefault();
-        alert(this.state.Keyword + " was Submitted");
-        const requestOptions = {
-            'key': this.state.Keyword,
-        };
-        axios.post('/api/searchbyKey', requestOptions)
-            .then(res => {
-                console.log(res.data);
-                this.props.handleviewCaseId(res.data.cin_list);
-            });
+        var flag = false;
+        if (this.state.Keyword == "") {
+            this.setState({ Keyword_error: true });
+            flag = true;
+        }
+        else {
+            this.setState({ Keyword_error: false });
+        }
+        if (!flag) {
+            alert(this.state.Keyword + " was Submitted");
+            const requestOptions = {
+                'key': this.state.Keyword,
+            };
+            axios.post('/api/searchbyKey', requestOptions)
+                .then(res => {
+                    console.log(res.data);
+                    this.props.handleviewCaseId(res.data.cin_list);                    
+                });
+        }
+
     }
     render() {
         return (
@@ -85,6 +131,7 @@ class SearchByKey extends Component {
                 <label>
                     Enter Keyword:
                     <input type="text" onChange={this.handleChange} name="Keyword" />
+                    {this.state.Keyword_error ? <div style={{ color: "red" }}>Keyword cannot be Empty</div> : ""}
                 </label>
                 <input type="submit" value="Search" />
             </form>
@@ -158,7 +205,7 @@ class Judge extends Component {
     }
     handleviewCaseId(props) {
         /**
-         * props : List of all {'cin':'<CIN>','crime_type':'<CRIME_TYPE>'}
+         * props : List of all {'cin':'<CIN>','crime_type':'<crime_type>'}
          */
         this.setState({  curr_caseIdList: props ,searchrecv_Key: true,});
         console.log('Handle View Case Judge: ',this.state.curr_caseIdList);

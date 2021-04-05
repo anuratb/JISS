@@ -27,27 +27,32 @@ export default class ViewPendingCases extends Component {
     componentDidMount() {
         axios.get("/api/getPendingCase")
             .then(res => {
+                if (res.data.confirm == "0") {
+                    alert(res.data.message);                    
+                }
+                else {
+                    this.setState({
+                        case_list: res.data.case_list.map((item) => {
+                            return (
+                                {
+                                    'cin': item.cin,
+                                    'def_name': item.def_name,
+                                    'def_addr': item.def_addr,
+                                    'crime_type': item.crime_type,
+                                    'crime_date': new Date(parseInt(item.crime_date.year), parseInt(item.crime_date.month) - 1, parseInt(item.crime_date.day)),
+                                    'crime_loc': item.crime_loc,
+                                    'arresting_off_name': item.arresting_off_name,
+                                    'arrest_date': new Date(parseInt(item.arrest_date.year), parseInt(item.arrest_date.month) - 1, parseInt(item.arrest_date.day)),
+                                    'name_pres_judge': item.name_pres_judge,
+                                    'public_prosecutor_name': item.public_prosecutor_name,
+                                    'arrest_date': new Date(parseInt(item.starting_date.year), parseInt(item.starting_date.month) - 1, parseInt(item.starting_date.day))
+                                }
+                            );
 
-                this.setState({
-                    case_list: res.data.case_list.map((item) => {
-                        return (
-                            {
-                                'cin': item.cin,
-                                'def_name': item.def_name,
-                                'def_addr': item.def_addr,
-                                'crime_type': item.crime_type,
-                                'crime_date': new Date(parseInt(item.crime_date.year), parseInt(item.crime_date.month) - 1, parseInt(item.crime_date.day)),
-                                'crime_loc': item.crime_loc,
-                                'arresting_off_name': item.arresting_off_name,
-                                'arrest_date': new Date(parseInt(item.arrest_date.year), parseInt(item.arrest_date.month) - 1, parseInt(item.arrest_date.day)),
-                                'name_pres_judge': item.name_pres_judge,
-                                'public_prosecutor_name': item.public_prosecutor_name,
-                                'arrest_date': new Date(parseInt(item.starting_date.year), parseInt(item.starting_date.month) - 1, parseInt(item.starting_date.day))
-                            }
-                        );
+                        })
+                    }, () => console.log('Get Pending :', this.state.case_list));
+                }
 
-                    })
-                }, () => console.log('Get Pending :', this.state.case_list));
             })
             .catch(err => {
                 err.response ? alert('Error in Server ' + err.response.status) : console.log(err);

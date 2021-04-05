@@ -18,7 +18,7 @@ export default class CourtCase extends Component {
         def_name: "",
         def_addr: "",
         pros_name: "",        
-        crime_Type: "",
+        crime_type: "",
         crime_date: "",
         crime_loc: "",
         arresting_off_name: "",
@@ -39,7 +39,7 @@ export default class CourtCase extends Component {
           def_name: props.case_data.def_name,
           def_addr: props.case_data.def_addr,
           pros_name: props.case_data.pros_name,          
-          crime_Type: props.case_data.crime_Type,
+          crime_type: props.case_data.crime_type,
           crime_date: props.case_data.crime_date,
           crime_loc: props.case_data.crime_loc,
           arresting_off_name: props.case_data.arresting_off_name,
@@ -94,7 +94,7 @@ export default class CourtCase extends Component {
             <b>Latest Hearing Date: </b>{this.state.latest_hearing_date}
           </div>
           <div key="2">
-            <b>Crime Type :</b>  {this.state.crime_Type}
+            <b>Crime Type :</b>  {this.state.crime_type}
             <br />
             <b>Crime Date :</b>  {this.state.crime_date}
             <br />

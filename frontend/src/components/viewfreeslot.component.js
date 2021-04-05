@@ -213,6 +213,7 @@ export default class ViewFreeSlot extends Component {
         }
     }
     render() {
+        //Entry Adj
         if (this.state.val == "4") {
             return (
 
@@ -227,11 +228,12 @@ export default class ViewFreeSlot extends Component {
             );
         }
         else if (this.state.val == "3") {
+            //Choose Case
             return (
                 <Router>
                     <div className="Registrar">
                         <div className="Registrar-header">
-                            <AddCase getAddedCIN={(cin) => { this.setState({ selected_cin: cin }, () => this.handleAssignHearingDate()); this.setState({ val: "4" }); }} hearing_slot="1" hearing_date={this.state.query_date} goback={() => { this.setState({ val: "1" }) }} />
+                            <AddCase getAddedCIN={(cin) => { this.setState({ selected_cin: cin }, () => this.handleAssignHearingDate()); this.setState({ val: "4" }); }}  goback={() => { this.setState({ val: "1" }) }} />
                         </div>
                     </div>
                 </Router>

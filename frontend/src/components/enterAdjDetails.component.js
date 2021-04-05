@@ -6,13 +6,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import './registrar.css';
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router,withRouter } from "react-router-dom";
 import LogoutButton from "./logoutbutton"
+import ViewPendingCases from './viewPendingCases.component'
 import './form.css';
 /**
  * props : cin,goback
  */
-export default class AdjForm extends Component {
+
+class AdjForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -20,6 +22,7 @@ export default class AdjForm extends Component {
             cin: props.cin ? props.cin : "",
             closed: false,
             case_summary: "",
+            cin_recv:props.cin?true:false,
 
             reason_error: false,
             cin_error: false,
@@ -78,7 +81,12 @@ export default class AdjForm extends Component {
             alert("Reason should not contain '|' ");
             flag = true;
         }
-
+        var numbers = /^[0-9]+$/;
+        if(!this.state.cin.match(numbers))
+        {
+            alert('CIN must be Integer')
+            flag = true;
+        }
         if (!flag) {
             const requestOptions = {
                 'cin': this.state.cin,
@@ -90,6 +98,10 @@ export default class AdjForm extends Component {
                     console.log(res.data);
                     if (res.data.confirm == "0") {
                         alert(res.data.message);
+                        if(res.data.message=="Please assign the next hearing of the case!")
+                        {
+                            this.props.history.push(`/assignslot/${this.state.cin}`);
+                        }
                     }
                     else {
 
@@ -126,38 +138,36 @@ export default class AdjForm extends Component {
 
     }
     handleChange(e) {
+        
         if (e.target.name != 'case_summary') {
             this.setState({ [e.target.name]: e.target.value });
             if (e.target.value == "") {
-                this.setState({ [e.target.name + "_error"]: true });
+                this.setState({ [e.target.name + "_error"]: true },()=>console.log(this.state));
+                
             }
             else {
                 this.setState({ [e.target.name + "_error"]: false });
+                
             }
         }
         else {
             this.setState({ [e.target.name]: e.target.value });
             if (this.state.closed) {
-                if (this.state.case_summary == "") {
+                if (e.target.value == "") {
                     this.setState({ case_summary_error: true });
+                    
                 }
                 else {
                     this.setState({ case_summary_error: false });
+                    
                 }
             }
             else {
                 this.setState({ case_summary_error: false });
             }
         }
-        if(this.state.reason.includes("|"))
-        {
-            alert("Reason should not contain '|' ");
-            this.setState({reason_error:true});
-        }
-        else
-        {
-            this.setState({reason_error:false});
-        }
+        
+        
     }
     render() {
         return (
@@ -185,11 +195,14 @@ export default class AdjForm extends Component {
                             </div>
 
                             {
-                                this.state.cin == "" ?
+                                !this.state.cin_recv ?
                                     <div className="form-group">
                                         <label>Enter Case Identificaation Number: </label>
                                         <input type="text" name="cin" onChange={this.handleChange} className="form-control" placeholder="Enter CIN" />
-                                        {this.state.reason_error ? <div style={{ color: "red" }}>CIN cannot be Empty</div> : ""}
+                                        {this.state.cin_error ? <div style={{ color: "red" }}>CIN cannot be Empty</div> : ""}
+                                    
+                                    <h3>Select From Pending Cases</h3>
+                                    <ViewPendingCases handleselect={(props) => { this.setState({ cin: props.data.cin,cin_recv:true });  }} />
                                     </div>
                                     : null
                             }
@@ -218,3 +231,4 @@ export default class AdjForm extends Component {
         );
     }
 }
+export default withRouter(AdjForm);

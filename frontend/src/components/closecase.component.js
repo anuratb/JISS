@@ -42,6 +42,14 @@ export default class CloseCase extends Component {
             this.setState({ cin_error: false });
             errors.cin_error = false;
         }
+        var numbers = /^[0-9]+$/;
+        console.log('During Submit',this.state.cin.match(numbers));
+        if(!this.state.cin.match(numbers))
+        {
+            alert('CIN must be Integer')
+            flag = true;
+        }
+        
 
 
         if (!flag) {
