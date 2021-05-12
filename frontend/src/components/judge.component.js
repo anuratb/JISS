@@ -52,6 +52,8 @@ class SearchById extends Component {
             axios.post('/api/searchbyId', requestOptions)
                 .then(res => {
                     console.log(res.data);
+                    this.props.handleviewCase(res.data.case_details); 
+                    /*
                     if(res.data.confirm=="1")
                     {
                         this.props.handleviewCase(res.data.case_details); 
@@ -60,6 +62,7 @@ class SearchById extends Component {
                     {
                         alert(res.data.message);
                     }
+                    */
                                        
                 })
                 .catch(err => {
